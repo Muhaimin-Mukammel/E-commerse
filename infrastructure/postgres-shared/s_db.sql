@@ -1,0 +1,1 @@
+CREATE DATABASE shared_db;

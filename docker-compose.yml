@@ -1,0 +1,88 @@
+version: "5.1.4"
+
+services:
+  user-mode:
+    build:
+      context: ./user-mode
+      dockerfile: Dockerfile
+    container_name: user-mode
+
+  admin-mode:
+    build:
+      context: ./admin-mode
+      dockerfile: Dockerfile
+    container_name: admin-mode
+
+  merchant-mode:
+    build:
+      context: ./merchant-mode
+      dockerfile: Dockerfile
+    container_name: merchant-mode
+
+  gateway-eventbus:
+    build:
+      context: ./gateway-eventbus
+      dockerfile: Dockerfile
+    container_name: gateway-eventbus
+
+  postgres:
+    image: postgres:17
+    container_name: master-db
+
+    ports:
+      - "5433:5432"
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: master_db
+
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./infrastructure/postgres/db.sql:/docker-entrypoint-initdb.d/db.sql
+
+  postgres-shared:
+    image: postgres:17
+    container_name: shared_db
+
+    ports:
+      - "5436:5432"
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: shared-db
+
+    volumes:
+      - postgres-shared-data:/var/lib/postgresql/data
+      - ./infrastructure/postgres-shared/s_db.sql:/docker-entrypoint-initdb.d/s_db.sql
+
+  postgres-slave:
+    image: postgres:17
+    container_name: slave_db
+
+    ports:
+      - "5435:5432"
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: slave-db
+
+    volumes:
+      - postgres-slave-data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:8
+    container_name: cache
+    ports:
+      - "6379:6379"
+
+    volumes:
+      - redis-data:/data
+
+volumes:
+  postgres-data:
+  postgres-shared-data:
+  postgres-slave-data:
+  redis-data:
