@@ -6,24 +6,32 @@ services:
       context: ./user-mode
       dockerfile: Dockerfile
     container_name: user-mode
+    ports:
+      - "8081:8080"
 
   admin-mode:
     build:
       context: ./admin-mode
       dockerfile: Dockerfile
     container_name: admin-mode
+    ports:
+      - "8082:8080"
 
   merchant-mode:
     build:
       context: ./merchant-mode
       dockerfile: Dockerfile
     container_name: merchant-mode
+    ports:
+      - "8083:8080"
 
   gateway-eventbus:
     build:
       context: ./gateway-eventbus
       dockerfile: Dockerfile
     container_name: gateway-eventbus
+    ports:
+      - "8080:8080"
 
   postgres:
     image: postgres:17
