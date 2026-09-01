@@ -44,7 +44,7 @@ public class SecurityConfig
         Collection<GrantedAuthority> authorities = new ArrayList<>();
 
         Map<String, Object> realmAccess = jwt.getClaim("realm_access");
-        //System.out.println(realmAccess);
+
         if(realmAccess == null){
             return authorities;
         }

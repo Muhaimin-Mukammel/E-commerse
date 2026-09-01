@@ -6,4 +6,4 @@ CREATE DATABASE admin_mode_db;
 
 CREATE DATABASE shared_db;
 
-CREATE DATABASE keycloak_db
+CREATE DATABASE keycloak_db;
