@@ -24,5 +24,11 @@ public class DataSourceConfig {
         return DataSourceBuilder.create().build();
     }
 
+    @Bean(name = "keycloakDataSource")
+    @ConfigurationProperties(prefix = "spring.datasource.keycloak")
+    public DataSource keycloakDataSource(){
+        return DataSourceBuilder.create().build();
+    }
+
 
 }
