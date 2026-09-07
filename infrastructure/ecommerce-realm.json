@@ -1,8 +1,26 @@
 {
+  "_comment": "To insert more of the features of the keycloak realm, use this github link : https://github.com/keycloak/terraform-provider-keycloak/blob/main/docs/resources/realm.md",
+
   "realm": "ecommerce",
   "enabled": true,
   "sslRequired": "none",
-  "registrationAllowed": false,
+  "registrationAllowed": true,
+  "registrationEmailAsUsername": false,
+  "verifyEmail": true,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "rememberMe": true,
+  "bruteForceProtected": true,
+  "permanentLockout": false,
+  "maxFailureWaitSeconds": 900,
+  "minimumQuickLoginWaitSeconds": 60,
+  "waitIncrementSeconds": 60,
+  "quickLoginCheckMilliSeconds": 1000,
+  "maxDeltaTimeSeconds": 43200,
+  "failureFactor": 5,
+
   "roles": {
     "realm": [
       { "name": "USER", "description": "regular customer" },
@@ -18,6 +36,8 @@
       "secret": "ecommerce-app-secret",
       "directAccessGrantsEnabled": true,
       "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "serviceAccountsEnabled": false,
       "redirectUris": ["*"],
       "webOrigins": ["*"]
     }
@@ -25,13 +45,23 @@
   "users": [
     {
       "username": "testuser",
-      "email": "testuser@example.com",
+      "email": "testing@example.com",
+      "firstName": "Test",
+      "lastName": "User",
       "enabled": true,
       "emailVerified": true,
       "credentials": [
-        { "type": "password", "value": "password123", "temporary": false }
+        {
+          "type": "password",
+          "value": "password123",
+          "temporary": false
+        }
       ],
       "realmRoles": ["USER"]
     }
-  ]
+  ],
+
+  "attributes": {
+    "userProfileEnabled": "true"
+  }
 }

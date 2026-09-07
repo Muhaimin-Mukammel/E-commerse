@@ -46,8 +46,8 @@ services:
       KC_HOSTNAME_STRICT_HTTPS: "false"
     volumes:
       - ./infrastructure/ecommerce-realm.json:/opt/keycloak/data/import/ecommerce-realm.json
-    expose:
-      - "8080"
+    ports:
+      - "8084:8080"
     depends_on:
       - postgres
 
