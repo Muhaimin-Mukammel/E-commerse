@@ -65,7 +65,7 @@ public class JpaConfig {
         properties.put("hibernate.dialect", "org.hibernate.dialect.PostgresDialect");
         properties.put("hibernate.show_sql", true);
         properties.put("hibernate.format_sql", true);
-        properties.put("hibernate.hbm2ddl.auto", "update");
+        properties.put("hibernate.hbm2ddl.auto", "none");
 
         return builder
                 .dataSource(dataSource)
