@@ -11,10 +11,10 @@ import javax.sql.DataSource;
 @Configuration
 public class DataSourceConfig {
 
-    @Bean(name = "localDataSource")
+    @Bean(name = "userLocalDataSource")
     @Primary
     @ConfigurationProperties(prefix = "spring.datasource.local")
-    public DataSource localDataSource(){
+    public DataSource userLocalDataSource(){
         return DataSourceBuilder.create().build();
     }
 
@@ -29,6 +29,4 @@ public class DataSourceConfig {
     public DataSource keycloakDataSource(){
         return DataSourceBuilder.create().build();
     }
-
-
 }

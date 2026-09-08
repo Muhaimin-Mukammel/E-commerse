@@ -15,3 +15,9 @@ GRANT ALL PRIVILEGES ON DATABASE merchant_mode_db TO merchantlocal;
 GRANT ALL PRIVILEGES ON DATABASE admin_mode_db TO adminlocal;
 GRANT ALL PRIVILEGES ON DATABASE shared_db TO shared;
 GRANT ALL PRIVILEGES ON DATABASE keycloak_db TO keycloak;
+
+ALTER DATABASE user_mode_db OWNER TO userlocal;
+ALTER DATABASE merchant_mode_db OWNER TO merchantlocal;
+ALTER DATABASE admin_mode_db OWNER TO adminlocal;
+ALTER DATABASE shared_db OWNER TO shared;
+ALTER DATABASE keycloak_db OWNER TO keycloak;
