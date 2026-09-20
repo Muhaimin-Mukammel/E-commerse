@@ -1,6 +1,4 @@
 {
-  "_comment": "To insert more of the features of the keycloak realm, use this github link : https://github.com/keycloak/terraform-provider-keycloak/blob/main/docs/resources/realm.md",
-
   "realm": "ecommerce",
   "enabled": true,
   "sslRequired": "none",
