@@ -10,7 +10,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/user/cart")
+@RequestMapping("/cart")
 public class CartController {
 
  @PostMapping("/create")

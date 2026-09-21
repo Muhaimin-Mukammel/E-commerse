@@ -13,7 +13,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/user/account")
+@RequestMapping("/account")
 public class AccountController {
 
     private final AccountService accountService;
