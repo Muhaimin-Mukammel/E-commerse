@@ -1,4 +1,4 @@
-package authentication;
+package com.ecomerse.gatewayeventbus.authentication;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

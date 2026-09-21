@@ -1,4 +1,4 @@
-package rate_limiting;
+package com.ecomerse.gatewayeventbus.rate_limiting;
 
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
