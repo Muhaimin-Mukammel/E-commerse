@@ -29,6 +29,7 @@ public class AccountServiceImpl implements AccountService {
 
             account1.setName(name);
             account1.setEmail(email);
+            account1.setPhone_number(request.phone_number());
 
             account = account1;
         } else {
