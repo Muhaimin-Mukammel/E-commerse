@@ -59,7 +59,9 @@ E-commerse/
 ```
 
 # Architecture :
+<div align="center">
 <img width="402" height="612" alt="image" src="https://github.com/user-attachments/assets/28b830ab-7afc-48ff-903f-0a53c4dd67a0" />
+</div>
 
 ## 1. Routing, RateLimiting, Authentication :
 ### Routing : 
@@ -72,3 +74,11 @@ Authentication of Zestora is done using OAuth2 with keycloak. This Auth system o
 ## 2. Database Setup :
 Zestora has a database-per-service setup using Change Data Capture (CDC) instead of cluttering everything into one giant shared database. When a seller updates an item, the app writes it directly to the isolated merchant-db. Right away, Debezium grabs that raw change straight from PostgreSQL's internal logs and throws it into Apache Kafka as a quick event message. The user-mode service listens to Kafka and mirrors that updated data into its own local user-db cache.This keeps the shopping side incredibly fast since buyers aren't locking up rows that sellers are trying to edit. The best part? Because all our data changes flow through Kafka as a continuous stream, we can easily plug in a centralized analytics database later down the road. Another database can suck up those identical event streams for heavy data crunching and admin dashboards, without slowing down the live shop for our customers.
 
+
+> More is scheduled and will be added as the project slowly progress
+
+---
+
+<div aligh="center">
+**Author:** Muhaimin Mukammel
+</div>
