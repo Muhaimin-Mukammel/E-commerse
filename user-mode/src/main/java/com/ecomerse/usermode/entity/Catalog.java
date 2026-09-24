@@ -5,22 +5,23 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "catalog")
-@NoArgsConstructor
 public class Catalog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
+
+    protected Catalog () {}
 
     public Catalog(Long id) {
-        Id = id;
+        id = id;
     }
 
     public Long getId() {
-        return Id;
+        return id;
     }
 
     public void setId(Long id) {
-        Id = id;
+        id = id;
     }
 }

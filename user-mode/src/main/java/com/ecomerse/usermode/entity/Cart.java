@@ -6,22 +6,23 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "cart")
-@NoArgsConstructor
 public class Cart {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
+
+    protected Cart () {}
 
     public Cart(Long id) {
-        Id = id;
+        id = id;
     }
 
     public Long getId() {
-        return Id;
+        return id;
     }
 
     public void setId(Long id) {
-        Id = id;
+        id = id;
     }
 }

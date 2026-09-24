@@ -5,22 +5,23 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "transaction")
-@NoArgsConstructor
 public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
+
+    protected Transaction () {}
 
     public Transaction(Long id) {
-        Id = id;
+        id = id;
     }
 
     public Long getId() {
-        return Id;
+        return id;
     }
 
     public void setId(Long id) {
-        Id = id;
+        id = id;
     }
 }

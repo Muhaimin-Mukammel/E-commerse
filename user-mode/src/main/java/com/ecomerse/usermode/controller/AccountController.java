@@ -32,7 +32,7 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/view/")
+    @GetMapping("/view")
     public ResponseEntity<ViewAccountResponse> viewAccount(@AuthenticationPrincipal Jwt jwt){
         ViewAccountResponse response = accountService.getAccountByKeycloakId(jwt.getSubject());
         return ResponseEntity.status(HttpStatus.OK).body(response);

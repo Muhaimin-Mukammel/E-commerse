@@ -2,24 +2,18 @@ package com.ecomerse.usermode.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
 
 @Entity
 @Table(name = "user_accounts")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class UserAccount {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
     @Column(name = "keycloakId", nullable = false, unique = true)
     private String keycloakId;
@@ -46,6 +40,8 @@ public class UserAccount {
         this.email = email;
         this.phone_number = phone_number;
     }
+
+    protected UserAccount () {}
 
     public String getKeycloakId() {
         return keycloakId;
@@ -96,10 +92,10 @@ public class UserAccount {
     }
 
     public Long getId() {
-        return Id;
+        return id;
     }
 
-    public void setId(Long id) {
-        Id = id;
+    public void setId(Long Id) {
+        id = Id;
     }
 }

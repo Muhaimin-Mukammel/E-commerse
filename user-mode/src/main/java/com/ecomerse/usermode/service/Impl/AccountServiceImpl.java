@@ -49,7 +49,7 @@ public class AccountServiceImpl implements AccountService {
     public DeleteAccountResponse deleteAccount(String keycloakId) {
         Optional<UserAccount> account = accountRepository.findByKeycloakId(keycloakId);
         if(!account.isPresent()){
-            throw new RuntimeException();
+            throw new RuntimeException("Account not found for Keycloak ID: " + keycloakId);
         }
 
         accountRepository.deleteByKeycloakId(keycloakId);
