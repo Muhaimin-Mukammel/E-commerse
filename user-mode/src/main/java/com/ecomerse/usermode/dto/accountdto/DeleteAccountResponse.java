@@ -1,4 +1,8 @@
 package com.ecomerse.usermode.dto.accountdto;
 
-public record DeleteAccountResponse() {
+import java.time.LocalDateTime;
+
+public record DeleteAccountResponse(
+        String message
+) {
 }

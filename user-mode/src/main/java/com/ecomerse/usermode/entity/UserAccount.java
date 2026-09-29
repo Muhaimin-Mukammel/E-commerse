@@ -22,7 +22,7 @@ public class UserAccount {
     private String name;
 
     @Column(name = "phone_number")
-    private Integer phone_number;
+    private String phone_number;
 
     @Column(name = "is_active")
     private boolean isActive = true;
@@ -34,7 +34,7 @@ public class UserAccount {
     @Column(name = "creation_time")
     private Instant createdAt;
 
-    public UserAccount(String keycloakId, String name, String email, Integer phone_number) {
+    public UserAccount(String keycloakId, String name, String email, String phone_number) {
         this.keycloakId = keycloakId;
         this.name = name;
         this.email = email;
@@ -75,11 +75,11 @@ public class UserAccount {
         isActive = active;
     }
 
-    public Integer getPhone_number() {
+    public String getPhone_number() {
         return phone_number;
     }
 
-    public void setPhone_number(Integer phone_number) {
+    public void setPhone_number(String phone_number) {
         this.phone_number = phone_number;
     }
 

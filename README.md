@@ -79,6 +79,6 @@ Zestora has a database-per-service setup using Change Data Capture (CDC) instead
 
 ---
 
-<div aligh="center">
-**Author:** Muhaimin Mukammel
+<div align="center">
+Author : Muhaimin Mukammel 
 </div>

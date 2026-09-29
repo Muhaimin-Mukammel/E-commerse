@@ -1,6 +1,9 @@
 package com.ecomerse.usermode.dto.accountdto;
 
+import jakarta.validation.constraints.NotNull;
+
 public record CreateOrUpdateAccountRequest(
-        Integer phone_number
+        @NotNull
+        String phone_number
 ) {
 }

@@ -9,5 +9,5 @@ public interface AccountRepository extends JpaRepository<UserAccount, Integer> {
     Optional<UserAccount> findByEmail(String email);
     Optional<UserAccount> findByKeycloakId(String keycloakId);
 
-    Optional<UserAccount> deleteByKeycloakId(String keycloakId);
+    void deleteByKeycloakId(String keycloakId);
 }
