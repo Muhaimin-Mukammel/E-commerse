@@ -1,3 +1,9 @@
+
+
+# Containers on the same network can talk using service names instead of changing IPs. The host still uses localhost + published ports; inside Docker you use the service name.
+# Docker repeatedly runs a small test to see is the connection healthy, depends_on with condition : service_healthy waits for the tests to pass.
+
+
 services:
   user-mode:
     build:
@@ -7,7 +13,12 @@ services:
     ports:
       - "8081:8080"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+    networks:
+      - zestora-net
 
   admin-mode:
     build:
@@ -17,7 +28,12 @@ services:
     ports:
       - "8082:8080"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+    networks:
+      - zestora-net
 
   merchant-mode:
     build:
@@ -27,7 +43,12 @@ services:
     ports:
       - "8083:8080"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+    networks:
+      - zestora-net
 
   gateway-eventbus:
     build:
@@ -36,6 +57,11 @@ services:
     container_name: gateway-eventbus
     ports:
       - "8080:8080"
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    networks:
+      - zestora-net
 
   keycloak:
     image: quay.io/keycloak/keycloak:26.0
@@ -49,52 +75,82 @@ services:
       KC_DB_USERNAME: keycloak
       KC_DB_PASSWORD: keycloak1234
       KC_HOSTNAME: http://keycloak:8080
-      KC_HOSTNAME_STRICT_HTTPS: "false"
+      KC_HTTP_ENABLED: "true"
+      KC_HEALTH_ENABLED: "true"
     volumes:
       - ./infrastructure/ecommerce-realm.json:/opt/keycloak/data/import/ecommerce-realm.json
     ports:
       - "8084:8080"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/8080"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 40s
+    networks:
+      - zestora-net
+
 
   postgres:
     image: postgres:17
     container_name: master-db
-
     ports:
       - "5433:5432"
-
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: master_db
-
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./infrastructure/postgres/db.sql:/docker-entrypoint-initdb.d/db.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d master_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - zestora-net
 
   postgres-slave:
     image: postgres:17
     container_name: slave_db
-
     ports:
       - "5435:5432"
-
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: slave-db
-
     volumes:
       - postgres-slave-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d slave_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - zestora-net
 
   redis:
     image: redis:8
     container_name: cache
     ports:
       - "6379:6379"
-
     volumes:
       - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - zestora-net
 
 volumes: { postgres-data:  , postgres-slave-data:  , redis-data: }
+networks:
+  zestora-net:
+    driver: bridge
