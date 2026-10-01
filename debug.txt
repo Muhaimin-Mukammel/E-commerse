@@ -1,0 +1,232 @@
+NAME               IMAGE                            COMMAND                  SERVICE            CREATED              STATUS                                  PORTS
+admin-mode         zestora-admin-mode               "/__cacert_entrypoin…"   admin-mode         About a minute ago   Restarting (0) Less than a second ago   
+cache              redis:8                          "docker-entrypoint.s…"   redis              7 minutes ago        Up 7 minutes (healthy)                  127.0.0.1:6379->6379/tcp
+gateway-eventbus   zestora-gateway-eventbus         "/__cacert_entrypoin…"   gateway-eventbus   About a minute ago   Created                                 
+keycloak           quay.io/keycloak/keycloak:26.0   "/opt/keycloak/bin/k…"   keycloak           7 minutes ago        Up 7 minutes (healthy)                  127.0.0.1:8084->8080/tcp
+master-db          postgres:17                      "docker-entrypoint.s…"   postgres           7 minutes ago        Up 7 minutes (healthy)                  127.0.0.1:5433->5432/tcp
+merchant-mode      zestora-merchant-mode            "/__cacert_entrypoin…"   merchant-mode      About a minute ago   Restarting (0) 2 seconds ago            
+user-mode          zestora-user-mode                "/__cacert_entrypoin…"   user-mode          About a minute ago   Up 7 seconds                            8080/tcp
+admin-mode  |   '  |____| .__|_| |_|_| |_\__, | / / / /
+admin-mode  |  =========|_|==============|___/=/_/_/_/
+admin-mode  | 
+cache       | 1:C 01 Oct 2026 01:15:44.804 * oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+cache       | 1:C 01 Oct 2026 01:15:44.804 * Redis version=8.10.1, bits=64, commit=00000000, modified=1, pid=1, just started
+admin-mode  |  :: Spring Boot ::                (v4.1.0)
+admin-mode  | 
+user-mode   | 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:321) ~[spring-boot-4.1.0.jar!/:4.1.0]
+user-mode   | 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1365) ~[spring-boot-4.1.0.jar!/:4.1.0]
+user-mode   | 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354) ~[spring-boot-4.1.0.jar!/:4.1.0]
+admin-mode  | 2026-10-01T01:22:49.730Z  INFO 1 --- [admin-mode] [           main] c.e.adminmode.AdminModeApplication       : Starting AdminModeApplication v0.0.1-SNAPSHOT using Java 25.0.4.1 with PID 1 (/app/app.jar started by root in /app)
+admin-mode  | 2026-10-01T01:22:49.740Z  INFO 1 --- [admin-mode] [           main] c.e.adminmode.AdminModeApplication       : No active profile set, falling back to 1 default profile: "default"
+admin-mode  | 2026-10-01T01:22:52.055Z  INFO 1 --- [admin-mode] [           main] c.e.adminmode.AdminModeApplication       : Started AdminModeApplication in 3.938 seconds (process running for 5.63)
+admin-mode  | 
+admin-mode  |   .   ____          _            __ _ _
+admin-mode  |  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+admin-mode  | ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+cache       | 1:C 01 Oct 2026 01:15:44.804 * Configuration loaded
+cache       | 1:M 01 Oct 2026 01:15:44.805 * monotonic clock: POSIX clock_gettime
+cache       | 1:M 01 Oct 2026 01:15:44.811 * Running mode=standalone, port=6379.
+cache       | 1:M 01 Oct 2026 01:15:44.816 * Server initialized
+cache       | 1:M 01 Oct 2026 01:15:44.819 * BGSAVE done, 0 keys saved, 0 keys skipped, 89 bytes written.
+admin-mode  |  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+admin-mode  |   '  |____| .__|_| |_|_| |_\__, | / / / /
+admin-mode  |  =========|_|==============|___/=/_/_/_/
+admin-mode  | 
+admin-mode  |  :: Spring Boot ::                (v4.1.0)
+user-mode   | 	at com.ecomerse.usermode.UserModeApplication.main(UserModeApplication.java:13) ~[!/:0.0.1-SNAPSHOT]
+user-mode   | 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[na:na]
+user-mode   | 	at java.base/java.lang.reflect.Method.invoke(Method.java:565) ~[na:na]
+keycloak    | Updating the configuration and installing your custom providers, if any. Please wait.
+admin-mode  | 
+admin-mode  | 2026-10-01T01:22:56.376Z  INFO 1 --- [admin-mode] [           main] c.e.adminmode.AdminModeApplication       : Starting AdminModeApplication v0.0.1-SNAPSHOT using Java 25.0.4.1 with PID 1 (/app/app.jar started by root in /app)
+cache       | 1:M 01 Oct 2026 01:15:44.824 * Creating AOF base file appendonly.aof.1.base.rdb on server start
+cache       | 1:M 01 Oct 2026 01:15:44.830 * Creating AOF incr file appendonly.aof.1.incr.aof on server start
+cache       | 1:M 01 Oct 2026 01:15:44.830 * Ready to accept connections tcp
+user-mode   | 	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:106) ~[app.jar:0.0.1-SNAPSHOT]
+admin-mode  | 2026-10-01T01:22:56.388Z  INFO 1 --- [admin-mode] [           main] c.e.adminmode.AdminModeApplication       : No active profile set, falling back to 1 default profile: "default"
+admin-mode  | 2026-10-01T01:22:58.466Z  INFO 1 --- [admin-mode] [           main] c.e.adminmode.AdminModeApplication       : Started AdminModeApplication in 3.459 seconds (process running for 5.085)
+admin-mode  | 
+admin-mode  |   .   ____          _            __ _ _
+admin-mode  |  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+admin-mode  | ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+admin-mode  |  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+admin-mode  |   '  |____| .__|_| |_|_| |_\__, | / / / /
+admin-mode  |  =========|_|==============|___/=/_/_/_/
+user-mode   | 	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:64) ~[app.jar:0.0.1-SNAPSHOT]
+user-mode   | 	at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:40) ~[app.jar:0.0.1-SNAPSHOT]
+keycloak    | 2026-10-01 01:16:08,797 INFO  [io.qua.dep.QuarkusAugmentor] (main) Quarkus augmentation completed in 17439ms
+keycloak    | 2026-10-01 01:16:12,012 INFO  [org.keycloak.url.HostnameV2ProviderFactory] (main) If hostanme is specified, hostname-strict is effectively ignored
+keycloak    | 2026-10-01 01:16:15,112 INFO  [org.keycloak.quarkus.runtime.storage.infinispan.CacheManagerFactory] (main) Starting Infinispan embedded cache manager
+keycloak    | 2026-10-01 01:16:15,480 INFO  [org.keycloak.quarkus.runtime.storage.infinispan.CacheManagerFactory] (main) Persistent user sessions enabled and no memory limit found in configuration. Setting max entries for sessions to 10000 entries.
+keycloak    | 2026-10-01 01:16:15,481 INFO  [org.keycloak.quarkus.runtime.storage.infinispan.CacheManagerFactory] (main) Persistent user sessions enabled and no memory limit found in configuration. Setting max entries for clientSessions to 10000 entries.
+keycloak    | 2026-10-01 01:16:15,481 INFO  [org.keycloak.quarkus.runtime.storage.infinispan.CacheManagerFactory] (main) Persistent user sessions enabled and no memory limit found in configuration. Setting max entries for offlineSessions to 10000 entries.
+keycloak    | 2026-10-01 01:16:15,481 INFO  [org.keycloak.quarkus.runtime.storage.infinispan.CacheManagerFactory] (main) Persistent user sessions enabled and no memory limit found in configuration. Setting max entries for offlineClientSessions to 10000 entries.
+keycloak    | 2026-10-01 01:16:16,055 INFO  [org.infinispan.CONTAINER] (ForkJoinPool.commonPool-worker-1) ISPN000556: Starting user marshaller 'org.infinispan.commons.marshall.ImmutableProtoStreamMarshaller'
+keycloak    | 2026-10-01 01:16:17,298 INFO  [org.keycloak.broker.provider.AbstractIdentityProviderMapper] (main) Registering class org.keycloak.broker.provider.mappersync.ConfigSyncEventListener
+keycloak    | 2026-10-01 01:16:17,325 INFO  [org.keycloak.connections.infinispan.DefaultInfinispanConnectionProviderFactory] (main) Node name: node_430873, Site name: null
+keycloak    | 2026-10-01 01:16:18,842 INFO  [org.keycloak.quarkus.runtime.storage.database.liquibase.QuarkusJpaUpdaterProvider] (main) Initializing database schema. Using changelog META-INF/jpa-changelog-master.xml
+keycloak    | 
+user-mode   | Caused by: org.hibernate.service.spi.ServiceException: Unable to create requested service [org.hibernate.engine.jdbc.env.spi.JdbcEnvironment] due to: Unable to determine Dialect without JDBC metadata (please set 'jakarta.persistence.jdbc.url' for common cases or 'hibernate.dialect' when a custom Dialect implementation must be provided)
+keycloak    | UPDATE SUMMARY
+admin-mode  | 
+admin-mode  |  :: Spring Boot ::                (v4.1.0)
+admin-mode  | 
+admin-mode  | 2026-10-01T01:23:04.826Z  INFO 1 --- [admin-mode] [           main] c.e.adminmode.AdminModeApplication       : Starting AdminModeApplication v0.0.1-SNAPSHOT using Java 25.0.4.1 with PID 1 (/app/app.jar started by root in /app)
+user-mode   | 	at org.hibernate.service.internal.AbstractServiceRegistryImpl.createService(AbstractServiceRegistryImpl.java:273) ~[hibernate-core-7.4.1.Final.jar!/:7.4.1.Final]
+user-mode   | 	at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:235) ~[hibernate-core-7.4.1.Final.jar!/:7.4.1.Final]
+user-mode   | 	at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:212) ~[hibernate-core-7.4.1.Final.jar!/:7.4.1.Final]
+user-mode   | 	at org.hibernate.boot.model.relational.Database.<init>(Database.java:44) ~[hibernate-core-7.4.1.Final.jar!/:7.4.1.Final]
+admin-mode  | 2026-10-01T01:23:04.832Z  INFO 1 --- [admin-mode] [           main] c.e.adminmode.AdminModeApplication       : No active profile set, falling back to 1 default profile: "default"
+admin-mode     | 2026-10-01T01:23:07.096Z  INFO 1 --- [admin-mode] [           main] c.e.adminmode.AdminModeApplication       : Started AdminModeApplication in 4.154 seconds (process running for 6.197)
+keycloak    | Run:                        148
+keycloak       | Previously run:               0
+keycloak       | Filtered out:                 0
+keycloak       | -------------------------------
+keycloak       | Total change sets:          148
+keycloak       | 
+keycloak       | 2026-10-01 01:16:33,840 WARN  [io.agroal.pool] (main) Datasource '<default>': JDBC resources leaked: 3 ResultSet(s) and 0 Statement(s)
+keycloak       | 2026-10-01 01:16:33,847 WARN  [io.agroal.pool] (main) Datasource '<default>': JDBC resources leaked: 154 ResultSet(s) and 0 Statement(s)
+keycloak       | 2026-10-01 01:16:35,912 INFO  [org.keycloak.exportimport.dir.DirImportProvider] (main) Importing from directory /opt/keycloak/bin/../data/import
+keycloak       | 2026-10-01 01:16:35,919 INFO  [org.keycloak.services] (main) KC-SERVICES0050: Initializing master realm
+keycloak       | 2026-10-01 01:16:39,944 INFO  [org.keycloak.services] (main) KC-SERVICES0030: Full model import requested. Strategy: OVERWRITE_EXISTING
+keycloak       | 2026-10-01 01:16:42,988 INFO  [org.keycloak.exportimport.util.ImportUtils] (main) Realm 'ecommerce' imported
+admin-mode     | 
+keycloak       | 2026-10-01 01:16:43,010 INFO  [org.keycloak.services] (main) KC-SERVICES0032: Import finished successfully
+admin-mode     |   .   ____          _            __ _ _
+admin-mode     |  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+admin-mode     | ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+admin-mode     |  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+merchant-mode  |   '  |____| .__|_| |_|_| |_\__, | / / / /
+merchant-mode  |  =========|_|==============|___/=/_/_/_/
+merchant-mode  | 
+merchant-mode  |  :: Spring Boot ::                (v4.1.0)
+merchant-mode  | 
+merchant-mode  | 2026-10-01T01:22:49.522Z  INFO 1 --- [merchant-mode] [           main] c.e.m.MerchantModeApplication            : Starting MerchantModeApplication v0.0.1-SNAPSHOT using Java 25.0.4.1 with PID 1 (/app/app.jar started by root in /app)
+merchant-mode  | 2026-10-01T01:22:49.531Z  INFO 1 --- [merchant-mode] [           main] c.e.m.MerchantModeApplication            : No active profile set, falling back to 1 default profile: "default"
+merchant-mode  | 2026-10-01T01:22:51.809Z  INFO 1 --- [merchant-mode] [           main] c.e.m.MerchantModeApplication            : Started MerchantModeApplication in 3.856 seconds (process running for 5.545)
+merchant-mode  | 
+merchant-mode  |   .   ____          _            __ _ _
+keycloak       | 2026-10-01 01:16:43,121 INFO  [org.keycloak.services] (main) KC-SERVICES0077: Created temporary admin user with username temp-admin
+keycloak       | 2026-10-01 01:16:43,228 WARN  [io.agroal.pool] (main) Datasource '<default>': JDBC resources leaked: 3 ResultSet(s) and 0 Statement(s)
+keycloak       | 2026-10-01 01:16:43,485 INFO  [io.quarkus] (main) Keycloak 26.0.8 on JVM (powered by Quarkus 3.15.1) started in 34.000s. Listening on: http://0.0.0.0:8080. Management interface listening on http://0.0.0.0:9000.
+keycloak       | 2026-10-01 01:16:43,486 INFO  [io.quarkus] (main) Profile dev activated. 
+merchant-mode  |  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+merchant-mode  | ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+user-mode   | 	at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.getDatabase(InFlightMetadataCollectorImpl.java:251) ~[hibernate-core-7.4.1.Final.jar!/:7.4.1.Final]
+user-mode      | 	at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.<init>(InFlightMetadataCollectorImpl.java:203) ~[hibernate-core-7.4.1.Final.jar!/:7.4.1.Final]
+user-mode      | 	at org.hibernate.boot.model.process.spi.MetadataBuildingProcess.complete(MetadataBuildingProcess.java:180) ~[hibernate-core-7.4.1.Final.jar!/:7.4.1.Final]
+admin-mode     |   '  |____| .__|_| |_|_| |_\__, | / / / /
+admin-mode     |  =========|_|==============|___/=/_/_/_/
+admin-mode     | 
+user-mode      | 	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.metadata(EntityManagerFactoryBuilderImpl.java:1388) ~[hibernate-core-7.4.1.Final.jar!/:7.4.1.Final]
+user-mode      | 	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.populateSessionFactoryBuilder(EntityManagerFactoryBuilderImpl.java:1468) ~[hibernate-core-7.4.1.Final.jar!/:7.4.1.Final]
+keycloak       | 2026-10-01 01:16:43,486 INFO  [io.quarkus] (main) Installed features: [agroal, cdi, hibernate-orm, jdbc-postgresql, keycloak, narayana-jta, opentelemetry, reactive-routes, rest, rest-jackson, smallrye-context-propagation, smallrye-health, vertx]
+keycloak       | 2026-10-01 01:16:43,498 WARN  [org.keycloak.quarkus.runtime.KeycloakMain] (main) Running the server in development mode. DO NOT use this configuration in production.
+user-mode      | 	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1450) ~[hibernate-core-7.4.1.Final.jar!/:7.4.1.Final]
+user-mode      | 	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:93) ~[spring-orm-7.0.8.jar!/:7.0.8]
+user-mode      | 	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:443) ~[spring-orm-7.0.8.jar!/:7.0.8]
+user-mode      | 	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:436) ~[spring-orm-7.0.8.jar!/:7.0.8]
+user-mode      | 	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:411) ~[spring-orm-7.0.8.jar!/:7.0.8]
+user-mode      | 	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:419) ~[spring-orm-7.0.8.jar!/:7.0.8]
+user-mode      | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1862) ~[spring-beans-7.0.8.jar!/:7.0.8]
+admin-mode     |  :: Spring Boot ::                (v4.1.0)
+admin-mode     | 
+admin-mode     | 2026-10-01T01:23:13.848Z  INFO 1 --- [admin-mode] [           main] c.e.adminmode.AdminModeApplication       : Starting AdminModeApplication v0.0.1-SNAPSHOT using Java 25.0.4.1 with PID 1 (/app/app.jar started by root in /app)
+merchant-mode  |  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+user-mode      | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1811) ~[spring-beans-7.0.8.jar!/:7.0.8]
+user-mode      | 	... 20 common frames omitted
+user-mode      | Caused by: org.hibernate.HibernateException: Unable to determine Dialect without JDBC metadata (please set 'jakarta.persistence.jdbc.url' for common cases or 'hibernate.dialect' when a custom Dialect implementation must be provided)
+user-mode      | 	at org.hibernate.engine.jdbc.dialect.internal.DialectFactoryImpl.determineDialect(DialectFactoryImpl.java:190) ~[hibernate-core-7.4.1.Final.jar!/:7.4.1.Final]
+admin-mode     | 2026-10-01T01:23:13.860Z  INFO 1 --- [admin-mode] [           main] c.e.adminmode.AdminModeApplication       : No active profile set, falling back to 1 default profile: "default"
+admin-mode     | 2026-10-01T01:23:15.947Z  INFO 1 --- [admin-mode] [           main] c.e.adminmode.AdminModeApplication       : Started AdminModeApplication in 3.574 seconds (process running for 5.089)
+admin-mode     | 
+admin-mode     |   .   ____          _            __ _ _
+admin-mode     |  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+merchant-mode  |   '  |____| .__|_| |_|_| |_\__, | / / / /
+merchant-mode  |  =========|_|==============|___/=/_/_/_/
+user-mode      | 	at org.hibernate.engine.jdbc.dialect.internal.DialectFactoryImpl.buildDialect(DialectFactoryImpl.java:86) ~[hibernate-core-7.4.1.Final.jar!/:7.4.1.Final]
+user-mode      | 	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.getJdbcEnvironmentWithDefaults(JdbcEnvironmentInitiator.java:200) ~[hibernate-core-7.4.1.Final.jar!/:7.4.1.Final]
+merchant-mode  | 
+merchant-mode  |  :: Spring Boot ::                (v4.1.0)
+merchant-mode  | 
+admin-mode     | ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+admin-mode     |  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+merchant-mode  | 2026-10-01T01:22:56.185Z  INFO 1 --- [merchant-mode] [           main] c.e.m.MerchantModeApplication            : Starting MerchantModeApplication v0.0.1-SNAPSHOT using Java 25.0.4.1 with PID 1 (/app/app.jar started by root in /app)
+merchant-mode  | 2026-10-01T01:22:56.195Z  INFO 1 --- [merchant-mode] [           main] c.e.m.MerchantModeApplication            : No active profile set, falling back to 1 default profile: "default"
+merchant-mode  | 2026-10-01T01:22:58.242Z  INFO 1 --- [merchant-mode] [           main] c.e.m.MerchantModeApplication            : Started MerchantModeApplication in 3.408 seconds (process running for 5.139)
+admin-mode     |   '  |____| .__|_| |_|_| |_\__, | / / / /
+admin-mode     |  =========|_|==============|___/=/_/_/_/
+admin-mode     | 
+admin-mode     |  :: Spring Boot ::                (v4.1.0)
+user-mode      | 	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.getJdbcEnvironmentUsingJdbcMetadata(JdbcEnvironmentInitiator.java:452) ~[hibernate-core-7.4.1.Final.jar!/:7.4.1.Final]
+admin-mode     | 
+admin-mode     | 2026-10-01T01:23:26.376Z  INFO 1 --- [admin-mode] [           main] c.e.adminmode.AdminModeApplication       : Starting AdminModeApplication v0.0.1-SNAPSHOT using Java 25.0.4.1 with PID 1 (/app/app.jar started by root in /app)
+admin-mode     | 2026-10-01T01:23:26.396Z  INFO 1 --- [admin-mode] [           main] c.e.adminmode.AdminModeApplication       : No active profile set, falling back to 1 default profile: "default"
+merchant-mode  | 
+merchant-mode  |   .   ____          _            __ _ _
+admin-mode     | 2026-10-01T01:23:28.332Z  INFO 1 --- [admin-mode] [           main] c.e.adminmode.AdminModeApplication       : Started AdminModeApplication in 3.889 seconds (process running for 5.509)
+merchant-mode  |  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+merchant-mode  | ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+merchant-mode  |  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+merchant-mode  |   '  |____| .__|_| |_|_| |_\__, | / / / /
+merchant-mode  |  =========|_|==============|___/=/_/_/_/
+merchant-mode  | 
+merchant-mode  |  :: Spring Boot ::                (v4.1.0)
+merchant-mode  | 
+merchant-mode  | 2026-10-01T01:23:04.309Z  INFO 1 --- [merchant-mode] [           main] c.e.m.MerchantModeApplication            : Starting MerchantModeApplication v0.0.1-SNAPSHOT using Java 25.0.4.1 with PID 1 (/app/app.jar started by root in /app)
+merchant-mode  | 2026-10-01T01:23:04.329Z  INFO 1 --- [merchant-mode] [           main] c.e.m.MerchantModeApplication            : No active profile set, falling back to 1 default profile: "default"
+merchant-mode  | 2026-10-01T01:23:06.485Z  INFO 1 --- [merchant-mode] [           main] c.e.m.MerchantModeApplication            : Started MerchantModeApplication in 3.965 seconds (process running for 6.021)
+merchant-mode  | 
+user-mode      | 	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.getJdbcEnvironment(JdbcEnvironmentInitiator.java:143) ~[hibernate-core-7.4.1.Final.jar!/:7.4.1.Final]
+user-mode      | 	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:120) ~[hibernate-core-7.4.1.Final.jar!/:7.4.1.Final]
+merchant-mode  |   .   ____          _            __ _ _
+merchant-mode  |  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+user-mode      | 	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:80) ~[hibernate-core-7.4.1.Final.jar!/:7.4.1.Final]
+user-mode      | 	at org.hibernate.boot.registry.internal.StandardServiceRegistryImpl.initiateService(StandardServiceRegistryImpl.java:133) ~[hibernate-core-7.4.1.Final.jar!/:7.4.1.Final]
+merchant-mode  | ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+merchant-mode  |  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+merchant-mode  |   '  |____| .__|_| |_|_| |_\__, | / / / /
+merchant-mode  |  =========|_|==============|___/=/_/_/_/
+merchant-mode  | 
+merchant-mode  |  :: Spring Boot ::                (v4.1.0)
+user-mode      | 	at org.hibernate.service.internal.AbstractServiceRegistryImpl.createService(AbstractServiceRegistryImpl.java:260) ~[hibernate-core-7.4.1.Final.jar!/:7.4.1.Final]
+user-mode      | 	... 36 common frames omitted
+merchant-mode  | 
+merchant-mode  | 2026-10-01T01:23:12.890Z  INFO 1 --- [merchant-mode] [           main] c.e.m.MerchantModeApplication            : Starting MerchantModeApplication v0.0.1-SNAPSHOT using Java 25.0.4.1 with PID 1 (/app/app.jar started by root in /app)
+merchant-mode  | 2026-10-01T01:23:12.897Z  INFO 1 --- [merchant-mode] [           main] c.e.m.MerchantModeApplication            : No active profile set, falling back to 1 default profile: "default"
+merchant-mode  | 2026-10-01T01:23:14.906Z  INFO 1 --- [merchant-mode] [           main] c.e.m.MerchantModeApplication            : Started MerchantModeApplication in 3.402 seconds (process running for 4.737)
+merchant-mode  | 
+merchant-mode  |   .   ____          _            __ _ _
+user-mode      | 
+user-mode      | 
+user-mode      |   .   ____          _            __ _ _
+user-mode      |  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+merchant-mode  |  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+merchant-mode  | ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+merchant-mode  |  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+merchant-mode  |   '  |____| .__|_| |_|_| |_\__, | / / / /
+merchant-mode  |  =========|_|==============|___/=/_/_/_/
+merchant-mode  | 
+merchant-mode  |  :: Spring Boot ::                (v4.1.0)
+merchant-mode  | 
+merchant-mode  | 2026-10-01T01:23:24.498Z  INFO 1 --- [merchant-mode] [           main] c.e.m.MerchantModeApplication            : Starting MerchantModeApplication v0.0.1-SNAPSHOT using Java 25.0.4.1 with PID 1 (/app/app.jar started by root in /app)
+user-mode      | ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+user-mode      |  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+merchant-mode  | 2026-10-01T01:23:24.507Z  INFO 1 --- [merchant-mode] [           main] c.e.m.MerchantModeApplication            : No active profile set, falling back to 1 default profile: "default"
+user-mode      |   '  |____| .__|_| |_|_| |_\__, | / / / /
+user-mode      |  =========|_|==============|___/=/_/_/_/
+user-mode      | 
+user-mode      |  :: Spring Boot ::                (v4.1.0)
+user-mode      | 
+user-mode      | 2026-10-01T01:23:23.161Z  INFO 1 --- [user-mode] [           main] c.ecomerse.usermode.UserModeApplication  : Starting UserModeApplication v0.0.1-SNAPSHOT using Java 25.0.4.1 with PID 1 (/app/app.jar started by root in /app)
+merchant-mode  | 2026-10-01T01:23:26.603Z  INFO 1 --- [merchant-mode] [           main] c.e.m.MerchantModeApplication            : Started MerchantModeApplication in 3.729 seconds (process running for 4.85)
+user-mode      | 2026-10-01T01:23:23.182Z  INFO 1 --- [user-mode] [           main] c.ecomerse.usermode.UserModeApplication  : No active profile set, falling back to 1 default profile: "default"
+user-mode      | 2026-10-01T01:23:26.409Z  INFO 1 --- [user-mode] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+user-mode      | 2026-10-01T01:23:26.704Z  INFO 1 --- [user-mode] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 231 ms. Found 4 JPA repository interfaces.
+user-mode      | 2026-10-01T01:23:28.797Z  INFO 1 --- [user-mode] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+user-mode      | 2026-10-01T01:23:28.837Z  INFO 1 --- [user-mode] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+user-mode      | 2026-10-01T01:23:28.838Z  INFO 1 --- [user-mode] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.22]
+user-mode      | 2026-10-01T01:23:28.896Z  INFO 1 --- [user-mode] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 5425 ms
+user-mode      | 2026-10-01T01:23:29.410Z  INFO 1 --- [user-mode] [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+user-mode      | 2026-10-01T01:23:29.531Z  INFO 1 --- [user-mode] [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.4.1.Final
+keycloak exit=0 error=

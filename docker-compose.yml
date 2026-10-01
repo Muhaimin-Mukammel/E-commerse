@@ -3,92 +3,125 @@
 # Containers on the same network can talk using service names instead of changing IPs. The host still uses localhost + published ports; inside Docker you use the service name.
 # Docker repeatedly runs a small test to see is the connection healthy, depends_on with condition : service_healthy waits for the tests to pass.
 
+name: Zestora
+
+x-java-service: &java-service
+  restart: unless-stopped
+  networks:
+    [zestora-net]
 
 services:
+
   user-mode:
+    <<: *java-service
     build:
       context: ./user-mode
       dockerfile: Dockerfile
     container_name: user-mode
-    ports:
-      - "8081:8080"
+    expose: [8080]
+    environment:
+      DB_URL : jdbc:postgresql://postgres:5432/user_mode_db
+      DB_USERNAME : userlocal
+      DB_PASSWORD : ${USER_DB_PASSWORD:?}
+      JWT_ISSUER_URI: ${JWT_ISSUER_URI:?}
+      JWT_JWK_SET_URI: ${JWT_JWK_SET_URI:?}
     depends_on:
       postgres:
         condition: service_healthy
       keycloak:
         condition: service_healthy
-    networks:
-      - zestora-net
 
   admin-mode:
+    <<: *java-service
     build:
       context: ./admin-mode
       dockerfile: Dockerfile
     container_name: admin-mode
-    ports:
-      - "8082:8080"
+    expose: [8080]
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/admin_mode_db
+      DB_USERNAME: adminlocal
+      DB_PASSWORD: ${ADMIN_DB_PASSWORD:?}
+      JWT_ISSUER_URI: ${JWT_ISSUER_URI:?}
+      JWT_JWK_SET_URI: ${JWT_JWK_SET_URI:?}
     depends_on:
       postgres:
         condition: service_healthy
       keycloak:
         condition: service_healthy
-    networks:
-      - zestora-net
 
   merchant-mode:
+    <<: *java-service
     build:
       context: ./merchant-mode
       dockerfile: Dockerfile
     container_name: merchant-mode
-    ports:
-      - "8083:8080"
+    expose: [8080]
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/merchant_mode_db
+      DB_USERNAME: merchantlocal
+      DB_PASSWORD: ${MERCHANT_DB_PASSWORD:?}
+      JWT_ISSUER_URI: ${JWT_ISSUER_URI:?}
+      JWT_JWK_SET_URI: ${JWT_JWK_SET_URI:?}
     depends_on:
       postgres:
         condition: service_healthy
       keycloak:
         condition: service_healthy
-    networks:
-      - zestora-net
 
   gateway-eventbus:
+    <<: *java-service
     build:
       context: ./gateway-eventbus
       dockerfile: Dockerfile
     container_name: gateway-eventbus
     ports:
       - "8080:8080"
+    environment:
+      JWT_ISSUER_URI: ${JWT_ISSUER_URI:?}
+      JWT_JWK_SET_URI: ${JWT_JWK_SET_URI:?}
+      REDIS_HOST: redis
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?}
     depends_on:
       keycloak:
         condition: service_healthy
-    networks:
-      - zestora-net
+      redis:
+        condition: service_healthy
+      user-mode:
+        condition: service_started
+      merchant-mode:
+        condition: service_started
 
   keycloak:
     image: quay.io/keycloak/keycloak:26.0
     container_name: keycloak
+    restart: unless-stopped
     command: start-dev --import-realm
     environment:
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_ADMIN_USER:?}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_ADMIN_PASSWORD:?}
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak_db
       KC_DB_USERNAME: keycloak
-      KC_DB_PASSWORD: keycloak1234
-      KC_HOSTNAME: http://keycloak:8080
+      KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD:?}
+      KC_HOSTNAME: ${KC_PUBLIC_URL:-http://localhost:8084}
+      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
       KC_HTTP_ENABLED: "true"
       KC_HEALTH_ENABLED: "true"
+      KC_CLIENT_SECRET: ${KC_CLIENT_SECRET:?}
+      KC_TEST_USER_PASSWORD: ${KC_TEST_USER_PASSWORD:?}
     volumes:
-      - ./infrastructure/ecommerce-realm.json:/opt/keycloak/data/import/ecommerce-realm.json
+      - ./infrastructure/ecommerce-realm.json:/opt/keycloak/data/import/ecommerce-realm.json:ro
     ports:
-      - "8084:8080"
+      - "127.0.0.1:8084:8080"
     depends_on:
       postgres:
-        condition: service_started
+        condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/8080"]
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/9000 && printf 'GET /health/ready HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3 && grep -q UP <&3"]
       interval: 10s
       timeout: 5s
-      retries: 10
+      retries: 12
       start_period: 40s
     networks:
       - zestora-net
@@ -97,17 +130,21 @@ services:
   postgres:
     image: postgres:17
     container_name: master-db
-    ports:
-      - "5433:5432"
+    restart: unless-stopped
+    ports: [ "127.0.0.1:5433:5432" ]
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?}
       POSTGRES_DB: master_db
+      USER_DB_PASSWORD: ${USER_DB_PASSWORD:?}
+      MERCHANT_DB_PASSWORD: ${MERCHANT_DB_PASSWORD:?}
+      ADMIN_DB_PASSWORD: ${ADMIN_DB_PASSWORD:?}
+      KEYCLOAK_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD:?}
     volumes:
       - postgres-data:/var/lib/postgresql/data
-      - ./infrastructure/postgres/db.sql:/docker-entrypoint-initdb.d/db.sql
+      - ./infrastructure/postgres/01-init.sh:/docker-entrypoint-initdb.d/01-init.sh:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d master_db"]
+      test: [ "CMD-SHELL", "pg_isready -h 127.0.0.1 -U postgres -d master_db" ]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -118,19 +155,23 @@ services:
   redis:
     image: redis:8
     container_name: cache
-    ports:
-      - "6379:6379"
+    restart: unless-stopped
+    command: [ "sh", "-c", "exec redis-server /usr/local/etc/redis/redis.conf --requirepass \"$$REDIS_PASSWORD\"" ]
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?}
+    ports: [ "127.0.0.1:6379:6379" ]
     volumes:
+      - ./infrastructure/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
       - redis-data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [ "CMD-SHELL", "redis-cli -a \"$$REDIS_PASSWORD\" --no-auth-warning ping | grep -q PONG" ]
       interval: 5s
       timeout: 3s
       retries: 10
     networks:
-      - zestora-net
+     - zestora-net
 
-volumes: { postgres-data:  , postgres-slave-data:  , redis-data: }
+volumes: { postgres-data:  , redis-data: }
 networks:
   zestora-net:
     driver: bridge

@@ -1,15 +1,16 @@
 {
   "realm": "ecommerce",
   "enabled": true,
-  "sslRequired": "none",
+  "sslRequired": "external",
   "registrationAllowed": true,
   "registrationEmailAsUsername": false,
-  "verifyEmail": true,
+  "verifyEmail": false,
   "loginWithEmailAllowed": true,
   "duplicateEmailsAllowed": false,
   "resetPasswordAllowed": true,
   "editUsernameAllowed": false,
   "rememberMe": true,
+  "accessTokenLifespan": 300,
   "bruteForceProtected": true,
   "permanentLockout": false,
   "maxFailureWaitSeconds": 900,
@@ -21,25 +22,56 @@
 
   "roles": {
     "realm": [
-      { "name": "USER", "description": "regular customer" },
+      { "name": "USER",     "description": "regular customer" },
       { "name": "MERCHANT", "description": "seller account" },
-      { "name": "ADMIN", "description": "internal staff" }
+      { "name": "ADMIN",    "description": "internal staff" },
+      { "name": "offline_access",    "description": "${role_offline-access}" },
+      { "name": "uma_authorization", "description": "${role_uma_authorization}" },
+      {
+        "name": "default-roles-ecommerce",
+        "description": "${role_default-roles}",
+        "composite": true,
+        "composites": {
+          "realm": ["offline_access", "uma_authorization", "USER"]
+        }
+      }
     ]
   },
+  "defaultRole": {
+    "name": "default-roles-ecommerce",
+    "description": "${role_default-roles}",
+    "composite": true,
+    "clientRole": false
+  },
+
   "clients": [
     {
       "clientId": "ecommerce-app",
       "enabled": true,
       "publicClient": false,
-      "secret": "ecommerce-app-secret",
+      "secret": "${KC_CLIENT_SECRET}",
       "directAccessGrantsEnabled": true,
       "standardFlowEnabled": true,
       "implicitFlowEnabled": false,
       "serviceAccountsEnabled": false,
-      "redirectUris": ["*"],
-      "webOrigins": ["*"]
+      "redirectUris": ["http://localhost:3000/*"],
+      "webOrigins": ["http://localhost:3000"],
+      "attributes": { "pkce.code.challenge.method": "S256" },
+      "protocolMappers": [
+        {
+          "name": "ecommerce-app-audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "config": {
+            "included.client.audience": "ecommerce-app",
+            "id.token.claim": "false",
+            "access.token.claim": "true"
+          }
+        }
+      ]
     }
   ],
+
   "users": [
     {
       "username": "testuser",
@@ -51,15 +83,11 @@
       "credentials": [
         {
           "type": "password",
-          "value": "password123",
+          "value": "${KC_TEST_USER_PASSWORD}",
           "temporary": false
         }
       ],
       "realmRoles": ["USER"]
     }
-  ],
-
-  "attributes": {
-    "userProfileEnabled": "true"
-  }
+  ]
 }
