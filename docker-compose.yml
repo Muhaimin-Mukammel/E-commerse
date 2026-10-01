@@ -115,26 +115,6 @@ services:
     networks:
       - zestora-net
 
-  postgres-slave:
-    image: postgres:17
-    container_name: slave_db
-    ports:
-      - "5435:5432"
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: slave-db
-    volumes:
-      - postgres-slave-data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d slave_db"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-      start_period: 10s
-    networks:
-      - zestora-net
-
   redis:
     image: redis:8
     container_name: cache
