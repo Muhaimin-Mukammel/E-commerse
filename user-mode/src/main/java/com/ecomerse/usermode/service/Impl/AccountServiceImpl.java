@@ -7,8 +7,10 @@ import com.ecomerse.usermode.dto.accountdto.ViewAccountResponse;
 import com.ecomerse.usermode.entity.UserAccount;
 import com.ecomerse.usermode.repository.AccountRepository;
 import com.ecomerse.usermode.service.AccountService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -46,7 +48,7 @@ public class AccountServiceImpl implements AccountService {
     @Transactional(readOnly = true)
     public ViewAccountResponse getAccountByKeycloakId(String keycloakId) {
         UserAccount account = accountRepository.findByKeycloakId(keycloakId)
-                .orElseThrow(() -> new RuntimeException("Account not found. Keycloak Id : " + keycloakId));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found. Keycloak Id : " + keycloakId));
         return new ViewAccountResponse(
                 account.getId(), account.getKeycloakId(), account.getName(), account.getEmail(),account.getPhone_number(), account.isActive(), account.getCreatedAt()
         );

@@ -6,9 +6,12 @@
 name: Zestora
 
 x-java-service: &java-service
-  restart: unless-stopped
+  restart: "no"
   networks:
     [zestora-net]
+  environment:
+    SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: ${JWT_ISSUER_URI:?}
+    SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: ${JWT_JWK_SET_URI:?}
 
 services:
 
@@ -78,8 +81,8 @@ services:
     ports:
       - "8080:8080"
     environment:
-      JWT_ISSUER_URI: ${JWT_ISSUER_URI:?}
-      JWT_JWK_SET_URI: ${JWT_JWK_SET_URI:?}
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: ${JWT_ISSUER_URI:?}
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: ${JWT_JWK_SET_URI:?}
       REDIS_HOST: redis
       REDIS_PASSWORD: ${REDIS_PASSWORD:?}
     depends_on:
@@ -104,7 +107,8 @@ services:
       KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak_db
       KC_DB_USERNAME: keycloak
       KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD:?}
-      KC_HOSTNAME: ${KC_PUBLIC_URL:-http://localhost:8084}
+      KC_HOSTNAME: ${KC_PUBLIC_URL}
+      KC_PROXY_HEADERS: xforwarded
       KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
       KC_HTTP_ENABLED: "true"
       KC_HEALTH_ENABLED: "true"
@@ -118,11 +122,11 @@ services:
       postgres:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/9000 && printf 'GET /health/ready HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3 && grep -q UP <&3"]
+      test: [ "CMD", "timeout", "2", "sh", "-c", "</dev/tcp/127.0.0.1/8080" ]
       interval: 10s
       timeout: 5s
       retries: 12
-      start_period: 40s
+      start_period: 30s
     networks:
       - zestora-net
 
