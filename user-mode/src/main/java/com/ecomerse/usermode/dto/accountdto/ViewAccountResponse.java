@@ -1,9 +1,10 @@
 package com.ecomerse.usermode.dto.accountdto;
 
 import java.time.Instant;
+import java.util.UUID;
 
 public record ViewAccountResponse(
-        Long id,
+        UUID id,
         String keycloakId,
         String name,
         String email,

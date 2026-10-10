@@ -1,8 +1,10 @@
 package com.ecomerse.usermode.dto.accountdto;
 
+import java.util.UUID;
+
 public record CreateOrUpdateAccountResponse(
         String message,
-        Long id,
+        UUID id,
         String keycloakId,
         String name,
         String email,
