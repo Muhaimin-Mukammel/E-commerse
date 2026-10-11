@@ -23,12 +23,16 @@ public class Product {
     @Column(name = "product_status", nullable = false)
     private ProductStatus product_status;
 
+    @Column(name = "category_id", nullable = false)
+    private UUID category_id;
+
     public Product() {}
-    public Product(UUID product_id, String name, BigDecimal product_price, ProductStatus product_status) {
+    public Product(UUID product_id, String name, BigDecimal product_price, ProductStatus product_status, UUID category_id) {
         this.product_id = product_id;
         this.name = name;
         this.product_price = product_price;
         this.product_status = product_status;
+        this.category_id = category_id;
     }
 
     public UUID getProduct_id() {
@@ -54,5 +58,11 @@ public class Product {
     }
     public void setProduct_status(ProductStatus product_status) {
         this.product_status = product_status;
+    }
+    public UUID getCategory_id() {
+        return category_id;
+    }
+    public void setCategory_id(UUID category_id) {
+        this.category_id = category_id;
     }
 }
