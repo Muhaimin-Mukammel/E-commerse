@@ -11,8 +11,7 @@ import java.util.UUID;
 public class UserAccount {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    // user_id
+    @Column(name = "user_id")
     private UUID user_id;
 
     @Column(name = "keycloakId", nullable = false, unique = true)
@@ -35,6 +34,7 @@ public class UserAccount {
     private Instant createdAt;
 
     public UserAccount(String keycloakId, String name, String email, String phone_number) {
+        this.user_id = UUID.randomUUID();
         this.keycloakId = keycloakId;
         this.name = name;
         this.email = email;

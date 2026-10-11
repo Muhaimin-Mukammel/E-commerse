@@ -1,7 +1,9 @@
 package com.ecomerse.usermode.dto.cartdto;
 
+import java.util.UUID;
+
 public record AddItemToCartRequest(
-        // UUID product_id, this will be added later when the requied services to add this will be build
+        UUID product_id,
         Integer quantity
 ) {
 }

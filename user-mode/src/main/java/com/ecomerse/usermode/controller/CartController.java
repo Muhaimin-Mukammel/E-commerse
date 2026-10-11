@@ -20,26 +20,25 @@ public class CartController {
    this.cartService = cartService;
   }
 
+    private static final UUID TEST_USER_ID = UUID.fromString("68425107-0bc7-42ce-a858-d64038a4f63e");
+    private static final UUID TEST_PRODUCT_ID = UUID.fromString("f47ac10b-58cc-4372-a567-0e02b2c3d479");
+
   @PostMapping("/create")
   public ResponseEntity<CreateCartResponse> createCart(@AuthenticationPrincipal Jwt jwt) {
-      UUID test_user_id = UUID.fromString("68425107-0bc7-42ce-a858-d64038a4f63e");
-      CreateCartResponse response = cartService.createCart(test_user_id);
+      CreateCartResponse response = cartService.createCart(TEST_USER_ID);
       return new ResponseEntity<>(response, HttpStatus.CREATED);
   }
 
   @GetMapping("/getCart")
   public ResponseEntity<GetCartResponse> getCart(@AuthenticationPrincipal Jwt jwt){
-      UUID test_user_id = UUID.fromString("68425107-0bc7-42ce-a858-d64038a4f63e");
-      GetCartResponse response = cartService.getCartByCartId(test_user_id);
+      GetCartResponse response = cartService.getCartByCartId(TEST_USER_ID);
       return ResponseEntity.ok(response);
   }
 
   @PostMapping("/addItem")
   public ResponseEntity<AddItemToCartResponse> addItemToCart(
           @RequestBody AddItemToCartRequest request,  @AuthenticationPrincipal Jwt jwt){
-      UUID test_user_id = UUID.fromString("68425107-0bc7-42ce-a858-d64038a4f63e");
-      UUID test_product_id = UUID.fromString("f47ac10b-58cc-4372-a567-0e02b2c3d479");
-      AddItemToCartResponse response = cartService.addItemToCart(test_user_id, test_product_id, request.quantity());
+      AddItemToCartResponse response = cartService.addItemToCart(TEST_USER_ID, TEST_PRODUCT_ID, request.quantity());
       return ResponseEntity.ok(response);
   }
 
@@ -47,17 +46,14 @@ public class CartController {
     public ResponseEntity<RemoveItemFromCartResponse> removeItemFromCart(
             @RequestBody RemoveItemFromCartRequest request,
             @AuthenticationPrincipal Jwt jwt) {
-        UUID test_user_id = UUID.fromString("68425107-0bc7-42ce-a858-d64038a4f63e");
-        UUID test_product_id = UUID.fromString("f47ac10b-58cc-4372-a567-0e02b2c3d479");
-        RemoveItemFromCartResponse response = cartService.removeItemFromCart(test_user_id, test_product_id, request.quantity());
+        RemoveItemFromCartResponse response = cartService.removeItemFromCart(TEST_USER_ID, TEST_PRODUCT_ID, request.quantity());
         return ResponseEntity.ok(response);
     }
 
 
     @DeleteMapping("/clear")
   public ResponseEntity<ClearCartResponse> clearCart(@AuthenticationPrincipal Jwt jwt){
-        UUID test_user_id = UUID.fromString("68425107-0bc7-42ce-a858-d64038a4f63e");
-        ClearCartResponse response = cartService.clearCart(test_user_id);
+        ClearCartResponse response = cartService.clearCart(TEST_USER_ID);
         return ResponseEntity.ok(response);
   }
 }
