@@ -76,12 +76,12 @@ Authentication of Zestora is done using OAuth2 with keycloak. This Auth system o
 
 Explanation :-
 
-- User Management (user, address): Stores customer profiles and links them to multiple shipping/billing addresses.
-- Product Catalog (product, category): Manages items, pricing, inventory quantities, and organizes products into categories.
+- User Management (user, address): Stores customer profiles and links them to multiple addresses (OneToMany Relationship).
+- Product Catalog (product, category): Manages items, pricing, inventory quantities, and organizes products into categories (Categories not Implemented).
 - Shopping Cart (cart, cartItem): Tracks active user carts and the specific product quantities selected before checkout.
-- Order Processing (order, order_item): Captures completed orders and item snapshots (price/name at the time of purchase) to protect history from catalog updates.
-- Transactions (transaction): Logs payment details, methods, amounts, and statuses (pending/success/failed) linked directly to orders.
-- Feedback (reviews): Connects users and products to store ratings and written reviews.
+- Order Processing (order, order_item): Captures completed orders and item snapshots (price/name at the time of purchase) to protect history from latest updates/ensure accurate data.
+- Transactions (transaction): Logs payment details, methods, amounts, and statuses (pending/success/failed) linked directly to orders (OneToMany Relationship).
+- Feedback (reviews): Connects users and products to store ratings and written reviews (Not Implemented).
 > More is scheduled and will be added as the project slowly progress
 
 ---
