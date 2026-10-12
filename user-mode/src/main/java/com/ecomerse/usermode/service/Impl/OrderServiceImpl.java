@@ -1,10 +1,7 @@
 package com.ecomerse.usermode.service.Impl;
 
 import com.ecomerse.usermode.dto.orderdto.*;
-import com.ecomerse.usermode.entity.Cart;
-import com.ecomerse.usermode.entity.CartItem;
-import com.ecomerse.usermode.entity.Order;
-import com.ecomerse.usermode.entity.Product;
+import com.ecomerse.usermode.entity.*;
 import com.ecomerse.usermode.repository.CartRepository;
 import com.ecomerse.usermode.repository.OrderRepository;
 import com.ecomerse.usermode.repository.ProductRepository;
@@ -16,8 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -34,6 +29,7 @@ public class OrderServiceImpl implements OrderService {
         this.cartRepository = cartRepository;
     }
 
+    @Override
     @Transactional
     public CreateOrderResponse createOrder(UUID user_id) {
         Cart cart = cartRepository.findByUser_idAndStatus(user_id, CartStatus.ACTIVE)
@@ -48,12 +44,27 @@ public class OrderServiceImpl implements OrderService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Order already exists");
         }
 
-        Order order = new Order(cart.getCart_id(), user_id, cart.getTotal_value());
+        Order order = new Order(cart.getCart_id(), user_id);
+
+        for(CartItem cartItem : cart.getCart_items()){
+            Product p = cartItem.getProduct();
+            OrderItem oi = new OrderItem(
+                    order,
+                    p.getProduct_id(),
+                    p.getName(),
+                    p.getProduct_price(),
+                    cartItem.getQuantity()
+            );
+            order.addItem(oi);
+        }
+
+        order.recalculateValue();
         orderRepository.save(order);
 
         return new CreateOrderResponse("Order created Successfully", order.getOrder_id(), order.getOrderStatus(), order.getValue(), order.getCreated_at());
     }
 
+    @Override
     @Transactional
     public ConfirmOrderResponse confirmOrder(UUID user_id, UUID order_id) {
         boolean TEST_TRANSACTION_COMPLETE = true;
@@ -72,6 +83,7 @@ public class OrderServiceImpl implements OrderService {
         return new ConfirmOrderResponse("Order Confirmed Successfully", order.getOrder_id(), order.getOrderStatus());
     }
 
+    @Override
     @Transactional
     public CancelOrderResponse cancelOrder(UUID user_id, UUID order_id) {
         Order order = orderRepository.findByOrder_idAndUser_id(order_id, user_id)
@@ -90,36 +102,42 @@ public class OrderServiceImpl implements OrderService {
         return new CancelOrderResponse("Order has been cancelled",  order.getOrder_id(), order.getOrderStatus());
     }
 
+    @Override
     @Transactional
     public AddItemToOrderResponse addItemToOrder(UUID user_id, UUID order_id, UUID product_id, int quantity) {
         Order order = orderRepository.findByOrder_idAndUser_id(order_id, user_id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
+
+        Product product = productRepository.findById(product_id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
 
         if (order.getOrderStatus() != OrderStatus.NOT_CONFIRMED) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Order is " + order.getOrderStatus() + " and cannot be modified");
         }
 
-        Cart cart = cartRepository.findById(order.getCart_id())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cart not found on Order : " + order.getOrder_id()));
+        OrderItem orderitem = order.getOrder_items().stream().filter(i -> i.getProduct_id().equals(product_id)).findFirst()
+                .orElse(null);
 
-        Product product = productRepository.findById(product_id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
-
-        CartItem cartItem = cart.getCart_items().stream()
-                .filter(temp -> temp.getProduct().getProduct_id().equals(product)).findFirst().orElse(null);
-
-        if (cartItem != null) {
-            cartItem.setQuantity(cartItem.getQuantity() + quantity);
+        if(orderitem != null){
+            orderitem.setQuantity(orderitem.getQuantity() + quantity);
         } else {
-            cart.getCart_items().add(new CartItem(cart,  product, quantity));
+            OrderItem orderitem1 = new OrderItem(
+                    order,
+                    product.getProduct_id(),
+                    product.getName(),
+                    product.getProduct_price(),
+                    quantity
+            );
         }
 
-        CalculateTotalPriceOfCart(cart, order);
+        order.recalculateValue();
+        orderRepository.save(order);
 
         return new AddItemToOrderResponse("Item added to Order", order.getOrder_id(), order.getValue());
     }
 
+    @Override
     @Transactional
     public RemoveItemFromOrderResponse removeItemFromOrder(UUID user_id, UUID order_id, UUID product_id, int quantity) {
         Order order = orderRepository.findByOrder_idAndUser_id(order_id, user_id)
@@ -130,25 +148,25 @@ public class OrderServiceImpl implements OrderService {
                     "Order is " + order.getOrderStatus() + " and cannot be modified");
         }
 
-        Cart cart = cartRepository.findById(order.getCart_id())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cart not found on Order : " + order.getOrder_id()));
+        OrderItem orderItem = order.getOrder_items().stream().filter(item -> item.getProduct_id().equals(product_id))
+                .findFirst().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found in the Order"));
 
-        CartItem cartItem = cart.getCart_items().stream().filter(item -> item.getProduct().getProduct_id().equals(product_id))
-                .findFirst().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found in Order"));
-
-        int quantityAfterRemove = cartItem.getQuantity() - quantity;
+        int quantityAfterRemove = orderItem.getQuantity() - quantity;
         if(quantityAfterRemove < 0){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Quantity cannot be less than 0");
         } else if (quantityAfterRemove == 0) {
-            cart.getCart_items().remove(cartItem);
+            order.getOrder_items().remove(orderItem);
         } else {
-            cartItem.setQuantity(quantityAfterRemove);
+            orderItem.setQuantity(quantityAfterRemove);
         }
 
-        CalculateTotalPriceOfCart(cart, order);
+        order.recalculateValue();
+        orderRepository.save(order);
+
         return new RemoveItemFromOrderResponse("Item removed from Order", order.getOrder_id(), order.getValue());
     }
 
+    @Override
     @Transactional
     public ClearOrderResponse clearOrder(UUID user_id, UUID order_id) {
         Order order = orderRepository.findByOrder_idAndUser_id(order_id, user_id)
@@ -159,27 +177,10 @@ public class OrderServiceImpl implements OrderService {
                     "Order is " + order.getOrderStatus() + " and cannot be modified");
         }
 
-        Cart cart = cartRepository.findById(order.getCart_id())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cart not found on Order : " + order.getOrder_id()));
-
-        cart.getCart_items().clear();
-        cart.setTotal_value(BigDecimal.ZERO);
-        cart.setUpdated_at(Instant.now());
-        cartRepository.save(cart);
+        order.getOrder_items().clear();
+        order.recalculateValue();
+        orderRepository.save(order);
 
         return new ClearOrderResponse("Order has been cleared", order.getOrder_id(), order.getValue());
-    }
-
-    private void CalculateTotalPriceOfCart(Cart cart, Order order) {
-        BigDecimal totalPrice = cart.getCart_items().stream()
-                .map(item -> item.getProduct().getProduct_price().multiply(BigDecimal.valueOf(item.getQuantity())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        cart.setTotal_value(totalPrice);
-        cart.setUpdated_at(Instant.now());
-        cartRepository.save(cart);
-
-        order.setValue(totalPrice);
-        orderRepository.save(order);
     }
 }

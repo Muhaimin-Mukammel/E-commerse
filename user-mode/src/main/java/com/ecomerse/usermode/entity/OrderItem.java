@@ -53,6 +53,13 @@ public class OrderItem {
         return Objects.hashCode(order_item_id);
     }
 
+    public BigDecimal getLineTotal() {
+        if (unit_price == null || quantity == null) {
+            return BigDecimal.ZERO;
+        }
+        return unit_price.multiply(BigDecimal.valueOf(quantity));
+    }
+
     public Long getOrder_item_id() {
         return order_item_id;
     }

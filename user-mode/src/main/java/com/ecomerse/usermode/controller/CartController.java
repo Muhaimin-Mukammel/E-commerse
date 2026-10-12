@@ -2,6 +2,7 @@ package com.ecomerse.usermode.controller;
 
 import com.ecomerse.usermode.dto.cartdto.*;
 import com.ecomerse.usermode.service.CartService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -37,14 +38,14 @@ public class CartController {
 
   @PostMapping("/addItem")
   public ResponseEntity<AddItemToCartResponse> addItemToCart(
-          @RequestBody AddItemToCartRequest request,  @AuthenticationPrincipal Jwt jwt){
+          @Valid @RequestBody AddItemToCartRequest request, @AuthenticationPrincipal Jwt jwt){
       AddItemToCartResponse response = cartService.addItemToCart(TEST_USER_ID, TEST_PRODUCT_ID, request.quantity());
       return ResponseEntity.ok(response);
   }
 
     @PatchMapping("/removeItem")
     public ResponseEntity<RemoveItemFromCartResponse> removeItemFromCart(
-            @RequestBody RemoveItemFromCartRequest request,
+            @Valid @RequestBody RemoveItemFromCartRequest request,
             @AuthenticationPrincipal Jwt jwt) {
         RemoveItemFromCartResponse response = cartService.removeItemFromCart(TEST_USER_ID, TEST_PRODUCT_ID, request.quantity());
         return ResponseEntity.ok(response);

@@ -2,6 +2,7 @@ package com.ecomerse.usermode.controller;
 
 import com.ecomerse.usermode.dto.orderdto.*;
 import com.ecomerse.usermode.service.OrderService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -30,31 +31,31 @@ public class OrderController {
     }
 
     @PostMapping("/confirm")
-    public ResponseEntity<ConfirmOrderResponse> confirmOrder(@RequestParam ConfirmOrderRequest request, @AuthenticationPrincipal Jwt jwt) {
+    public ResponseEntity<ConfirmOrderResponse> confirmOrder(@Valid @RequestBody ConfirmOrderRequest request, @AuthenticationPrincipal Jwt jwt) {
         ConfirmOrderResponse response = orderService.confirmOrder(TEST_USER_ID, request.order_id());
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/cancel")
-    public ResponseEntity<CancelOrderResponse> cancelOrder(@RequestParam CancelOrderRequest request, @AuthenticationPrincipal Jwt jwt) {
+    public ResponseEntity<CancelOrderResponse> cancelOrder(@Valid @RequestBody CancelOrderRequest request, @AuthenticationPrincipal Jwt jwt) {
         CancelOrderResponse response = orderService.cancelOrder(TEST_USER_ID, request.order_id());
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/addItem")
-    public ResponseEntity<AddItemToOrderResponse> addItemToOrder(@RequestParam AddItemToOrderRequest request, @AuthenticationPrincipal Jwt jwt) {
+    public ResponseEntity<AddItemToOrderResponse> addItemToOrder(@Valid @RequestBody AddItemToOrderRequest request, @AuthenticationPrincipal Jwt jwt) {
         AddItemToOrderResponse response = orderService.addItemToOrder(TEST_USER_ID, request.order_id(), request.product_id(), request.quantity());
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/removeItem")
-    public ResponseEntity<RemoveItemFromOrderResponse> removeItemFromOrder(@RequestParam RemoveItemFromOrderRequest request, @AuthenticationPrincipal Jwt jwt) {
+    public ResponseEntity<RemoveItemFromOrderResponse> removeItemFromOrder(@Valid @RequestBody RemoveItemFromOrderRequest request, @AuthenticationPrincipal Jwt jwt) {
         RemoveItemFromOrderResponse response = orderService.removeItemFromOrder(TEST_USER_ID, request.order_id(), request.product_id(), request.quantity());
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/clear")
-    public ResponseEntity<ClearOrderResponse> clearOrder(@RequestParam ClearOrderRequest request, @AuthenticationPrincipal Jwt jwt) {
+    public ResponseEntity<ClearOrderResponse> clearOrder(@Valid @RequestBody ClearOrderRequest request, @AuthenticationPrincipal Jwt jwt) {
         ClearOrderResponse response = orderService.clearOrder(TEST_USER_ID, request.order_id());
         return ResponseEntity.ok(response);
     }

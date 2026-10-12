@@ -34,11 +34,11 @@ public class Order {
     private OrderStatus orderStatus;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> orderItems = new ArrayList<>();
+    private List<OrderItem> order_items = new ArrayList<>();
 
     public Order() {}
 
-    public Order(Long cart_id, UUID user_id, BigDecimal value) {
+    public Order(Long cart_id, UUID user_id) {
         order_id = UUID.randomUUID();
         this.user_id = user_id;
         this.value = value;
@@ -46,6 +46,19 @@ public class Order {
         this.orderStatus = OrderStatus.NOT_CONFIRMED;
         this.cart_id = cart_id;
     }
+
+    public void addItem(OrderItem item) {
+        order_items.add(item);
+        item.setOrder(this);
+    }
+
+    public void recalculateValue() {
+        this.value = order_items.stream()
+                .map(OrderItem::getLineTotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+
 
     public UUID getOrder_id() {
         return order_id;
@@ -82,5 +95,11 @@ public class Order {
     }
     public void setOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
+    }
+    public List<OrderItem> getOrder_items() {
+        return order_items;
+    }
+    public void setOrder_items(List<OrderItem> order_items) {
+        this.order_items = order_items;
     }
 }

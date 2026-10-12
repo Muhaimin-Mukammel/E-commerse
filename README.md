@@ -68,6 +68,20 @@ Rate Limiting is done in Zestora with Token Bucket Algorithm which is implemente
 ### Authentication : 
 Authentication of Zestora is done using OAuth2 with keycloak. This Auth system only allow’s /realms/** endpoints and everything else needs a valid JWT token. The Keycloak also take’s care of login and registration.
 
+## 2. Database Schema :
+### User-Mode Database Schema :
+<div align="center">
+<img width="647" height="813" alt="image" src="https://github.com/user-attachments/assets/7abb6e39-e183-4248-8135-13b5bf3c36b8" />
+</div>
+
+Explanation :-
+
+- User Management (user, address): Stores customer profiles and links them to multiple shipping/billing addresses.
+- Product Catalog (product, category): Manages items, pricing, inventory quantities, and organizes products into categories.
+- Shopping Cart (cart, cartItem): Tracks active user carts and the specific product quantities selected before checkout.
+- Order Processing (order, order_item): Captures completed orders and item snapshots (price/name at the time of purchase) to protect history from catalog updates.
+- Transactions (transaction): Logs payment details, methods, amounts, and statuses (pending/success/failed) linked directly to orders.
+- Feedback (reviews): Connects users and products to store ratings and written reviews.
 > More is scheduled and will be added as the project slowly progress
 
 ---
