@@ -12,11 +12,11 @@ public class OrderItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "orter_item_id")
-    private Long order_item_id;
+    @Column(name = "orderItemId")
+    private Long orderItemId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "order_id",  nullable = false)
+    @JoinColumn(name = "order_id",  nullable = false)
     private Order order;
 
     @Column(name = "product_id", nullable = false)
@@ -45,12 +45,12 @@ public class OrderItem {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof OrderItem orderItem)) return false;
-        return Objects.equals(order_item_id, orderItem.order_item_id);
+        return Objects.equals(orderItemId, orderItem.orderItemId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(order_item_id);
+        return Objects.hashCode(orderItemId);
     }
 
     public BigDecimal getLineTotal() {
@@ -61,10 +61,10 @@ public class OrderItem {
     }
 
     public Long getOrder_item_id() {
-        return order_item_id;
+        return orderItemId;
     }
     public void setOrder_item_id(Long order_item_id) {
-        this.order_item_id = order_item_id;
+        this.orderItemId = order_item_id;
     }
     public Order getOrder() {
         return order;

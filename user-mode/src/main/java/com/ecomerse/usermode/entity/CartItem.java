@@ -9,8 +9,8 @@ import java.util.Objects;
 public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "cart_item_id")
-    private Long cart_item_id;
+    @Column(name = "cartItemId")
+    private Long cartItemId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id", nullable = false)
@@ -36,19 +36,19 @@ public class CartItem {
         if (this == o) return true;
         if (!(o instanceof CartItem)) return false;
         CartItem cartItem = (CartItem) o;
-        return Objects.equals(cart_item_id, cartItem.cart_item_id);
+        return Objects.equals(cartItemId, cartItem.cartItemId);
     }
     @Override
     public int hashCode() {
-        return Objects.hash(cart_item_id);
+        return Objects.hash(cartItemId);
     }
 
 
     public Long getCart_item_id() {
-        return cart_item_id;
+        return cartItemId;
     }
     public void setCart_item_id(Long cart_item_id) {
-        this.cart_item_id = cart_item_id;
+        this.cartItemId = cart_item_id;
     }
     public Cart getCart() {
         return cart;

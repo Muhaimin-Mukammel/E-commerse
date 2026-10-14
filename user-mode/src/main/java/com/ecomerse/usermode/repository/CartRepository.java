@@ -8,6 +8,5 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface CartRepository extends JpaRepository<Cart, Long> {
-    Optional<Cart> findByCartId(String cartId);
-    Optional<Cart> findByUser_idAndStatus(UUID userId, CartStatus cartStatus);
+    Optional<Cart> findByUserIdAndStatus(UUID userId, CartStatus cartStatus);
 }

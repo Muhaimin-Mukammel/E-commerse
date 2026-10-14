@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
-    List<Transaction> findByOrder_id(UUID order_id);
-    Optional<Transaction> findByTransaction_idAndOrder_id(Long transaction_id, UUID order_id);
+    List<Transaction> findByOrderId(UUID order_id);
+    Optional<Transaction> findByTransactionIdAndOrderId(Long transaction_id, UUID order_id);
     boolean existsByOrderIdAndStatus(UUID orderId, TransactionStatus status);
 }

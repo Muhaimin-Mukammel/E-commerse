@@ -21,8 +21,8 @@ import java.util.UUID;
 @Service
 public class CartServiceImpl implements CartService {
 
-    private CartRepository cartRepository;
-    private ProductRepository productRepository;
+    private final CartRepository cartRepository;
+    private final ProductRepository productRepository;
 
     public CartServiceImpl(CartRepository cartRepository,  ProductRepository productRepository) {
         this.cartRepository = cartRepository;
@@ -33,7 +33,7 @@ public class CartServiceImpl implements CartService {
     @Transactional
     public AddItemToCartResponse addItemToCart(UUID user_id, UUID product_id, Integer quantity) {
 
-        Cart cart = cartRepository.findByUser_idAndStatus(user_id, CartStatus.ACTIVE)
+        Cart cart = cartRepository.findByUserIdAndStatus(user_id, CartStatus.ACTIVE)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cart not found"));
 
         Product product = productRepository.findById(product_id)
@@ -60,11 +60,8 @@ public class CartServiceImpl implements CartService {
 
     @Transactional
     public RemoveItemFromCartResponse removeItemFromCart(UUID user_id, UUID product_id, Integer quantity) {
-        Cart cart = cartRepository.findByUser_idAndStatus(user_id, CartStatus.ACTIVE)
+        Cart cart = cartRepository.findByUserIdAndStatus(user_id, CartStatus.ACTIVE)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cart not found"));
-
-        Product product = productRepository.findById(product_id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
 
         CartItem targetitem = cart.getCart_items().stream().filter(item -> item.getProduct().getProduct_id().equals(product_id)).findFirst()
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Item not found in the cart"));
@@ -86,7 +83,7 @@ public class CartServiceImpl implements CartService {
 
     @Transactional(readOnly = true)
     public GetCartResponse getCartByCartId(UUID user_id) {
-        Cart cart = cartRepository.findByUser_idAndStatus(user_id, CartStatus.ACTIVE)
+        Cart cart = cartRepository.findByUserIdAndStatus(user_id, CartStatus.ACTIVE)
                 .orElse(null);
 
         if(cart == null) {
@@ -116,7 +113,7 @@ public class CartServiceImpl implements CartService {
 
     @Transactional
     public CreateCartResponse createCart(UUID user_id) {
-        Cart cart = cartRepository.findByUser_idAndStatus(user_id, CartStatus.ACTIVE)
+        Cart cart = cartRepository.findByUserIdAndStatus(user_id, CartStatus.ACTIVE)
                 .orElse(null);
         if(cart != null) {
             return new CreateCartResponse(
@@ -140,7 +137,7 @@ public class CartServiceImpl implements CartService {
 
     @Transactional
     public ClearCartResponse clearCart(UUID user_id) {
-        Cart cart =  cartRepository.findByUser_idAndStatus(user_id, CartStatus.ACTIVE)
+        Cart cart =  cartRepository.findByUserIdAndStatus(user_id, CartStatus.ACTIVE)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cart not found"));
         cart.getCart_items().clear();
         cart.setUpdated_at(Instant.now());

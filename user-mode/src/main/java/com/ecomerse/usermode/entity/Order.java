@@ -15,11 +15,11 @@ import java.util.UUID;
 public class Order {
 
     @Id
-    @Column(name = "order_id")
-    private UUID order_id;
+    @Column(name = "orderId")
+    private UUID orderId;
 
-    @Column(name = "user_id", nullable = false)
-    private UUID user_id;
+    @Column(name = "userId", nullable = false)
+    private UUID userId;
 
     @Column(name = "value", nullable = false)
     private BigDecimal value;
@@ -32,7 +32,7 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private OrderStatus orderStatus;
+    private OrderStatus status;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "order_ayment_status", nullable = false)
@@ -44,11 +44,11 @@ public class Order {
     public Order() {}
 
     public Order(Long cart_id, UUID user_id) {
-        order_id = UUID.randomUUID();
-        this.user_id = user_id;
+        orderId = UUID.randomUUID();
+        this.userId = user_id;
         this.value = value;
         this.created_at = Instant.now();
-        this.orderStatus = OrderStatus.NOT_CONFIRMED;
+        this.status = OrderStatus.NOT_CONFIRMED;
         this.cart_id = cart_id;
         this.orderPaymentStatus = OrderPaymentStatus.ORDER_NOT_CONFIRMED;
     }
@@ -72,16 +72,16 @@ public class Order {
         this.orderPaymentStatus = orderPaymentStatus;
     }
     public UUID getOrder_id() {
-        return order_id;
+        return orderId;
     }
-    public void setOrder_id(UUID order_id) {
-        this.order_id = order_id;
+    public void setOrder_id(UUID orderId) {
+        this.orderId = orderId;
     }
     public UUID getUser_id() {
-        return user_id;
+        return userId;
     }
-    public void setUser_id(UUID user_id) {
-        this.user_id = user_id;
+    public void setUser_id(UUID userId) {
+        this.userId = userId;
     }
     public BigDecimal getValue() {
         return value;
@@ -102,10 +102,10 @@ public class Order {
         this.cart_id = cart_id;
     }
     public OrderStatus getOrderStatus() {
-        return orderStatus;
+        return status;
     }
     public void setOrderStatus(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
+        this.status = orderStatus;
     }
     public List<OrderItem> getOrder_items() {
         return order_items;

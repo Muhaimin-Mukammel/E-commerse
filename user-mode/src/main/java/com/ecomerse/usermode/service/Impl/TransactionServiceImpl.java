@@ -25,8 +25,8 @@ import java.util.UUID;
 @Service
 public class TransactionServiceImpl implements TransactionService {
 
-    private TransactionRepository transactionRepository;
-    private OrderRepository orderRepository;
+    private final TransactionRepository transactionRepository;
+    private final OrderRepository orderRepository;
 
     public TransactionServiceImpl(TransactionRepository transactionRepository, OrderRepository orderRepository) {
         this.transactionRepository = transactionRepository;
@@ -58,12 +58,12 @@ public class TransactionServiceImpl implements TransactionService {
         return new InitiateTransactionResponse("Transaction Initiated Successfully", order_id, transaction.getTransaction_id(), transactionMethod, transaction.getAmount(), transaction.getTransaction_status());
     }
 
-    private Random random = new Random();
+    private final Random random = new Random();
 
     @Override
     @Transactional
     public CompleteTransactionResponse completeTransaction(UUID user_id, Long transaction_id, UUID order_id) {
-        Transaction transaction = transactionRepository.findByTransaction_idAndOrder_id(transaction_id, order_id)
+        Transaction transaction = transactionRepository.findByTransactionIdAndOrderId(transaction_id, order_id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Transaction not found"));
 
         Order order = orderRepository.findById(order_id)
@@ -98,7 +98,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     @Transactional
     public CancelTransactionResponse cancelTransaction(UUID user_id, Long transaction_id, UUID order_id) {
-        Transaction transaction = transactionRepository.findByTransaction_idAndOrder_id(transaction_id, order_id)
+        Transaction transaction = transactionRepository.findByTransactionIdAndOrderId(transaction_id, order_id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Transaction not found"));
 
         Order order = orderRepository.findById(order_id)
@@ -124,7 +124,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     @Transactional(readOnly = true)
     public GetTransactionResponse getTransaction(UUID user_id, Long transaction_id, UUID order_id) {
-        Transaction transaction = transactionRepository.findByTransaction_idAndOrder_id(transaction_id, order_id)
+        Transaction transaction = transactionRepository.findByTransactionIdAndOrderId(transaction_id, order_id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Transaction not found"));
 
         Order order = orderRepository.findById(order_id)
@@ -147,6 +147,6 @@ public class TransactionServiceImpl implements TransactionService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "ACCESS DENIED!! Order dose not belong to the user");
         }
 
-        return transactionRepository.findByOrder_id(order_id).stream().map(item -> new GetTransactionResponse(item.getTransaction_id(), order_id, item.getTransactio_method(), item.getAmount(), item.getTransaction_status(), item.getCreated_at(), item.getCompleted_at())).toList();
+        return transactionRepository.findByOrderId(order_id).stream().map(item -> new GetTransactionResponse(item.getTransaction_id(), order_id, item.getTransactio_method(), item.getAmount(), item.getTransaction_status(), item.getCreated_at(), item.getCompleted_at())).toList();
     }
 }

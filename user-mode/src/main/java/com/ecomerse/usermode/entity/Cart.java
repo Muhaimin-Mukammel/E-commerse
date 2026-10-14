@@ -15,11 +15,11 @@ public class Cart {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "cart_id")
-    private Long cart_id;
+    @Column(name = "cartId")
+    private Long cartId;
 
-    @Column(name = "user_id", nullable = false, unique = true)
-    private UUID user_id;
+    @Column(name = "userId", nullable = false, unique = true)
+    private UUID userId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
@@ -35,14 +35,13 @@ public class Cart {
     BigDecimal total_value;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Column
     private List<CartItem> cart_items = new ArrayList<>();
 
 
     public Cart () {}
 
     public Cart(UUID user_id) {
-        this.user_id = user_id;
+        this.userId = user_id;
         this.status = CartStatus.ACTIVE;
         this.created_at = Instant.now();
         this.updated_at = Instant.now();
@@ -50,16 +49,16 @@ public class Cart {
     }
 
     public Long getCart_id() {
-        return cart_id;
+        return cartId;
     }
-    public void setCart_id(Long cart_id) {
-        this.cart_id = cart_id;
+    public void setCart_id(Long cartId) {
+        this.cartId = cartId;
     }
     public UUID getUser_id() {
-        return user_id;
+        return userId;
     }
-    public void setUser_id(UUID user_id) {
-        this.user_id = user_id;
+    public void setUser_id(UUID userId) {
+        this.userId = userId;
     }
     public CartStatus getStatus() {
         return status;

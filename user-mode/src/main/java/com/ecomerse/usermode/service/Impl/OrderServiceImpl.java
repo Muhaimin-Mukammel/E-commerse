@@ -20,9 +20,9 @@ import java.util.UUID;
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    private OrderRepository orderRepository;
-    private ProductRepository productRepository;
-    private CartRepository cartRepository;
+    private final OrderRepository orderRepository;
+    private final ProductRepository productRepository;
+    private final CartRepository cartRepository;
 
     public OrderServiceImpl(OrderRepository orderRepository, ProductRepository productRepository,  CartRepository cartRepository) {
         this.orderRepository = orderRepository;
@@ -33,14 +33,14 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public CreateOrderResponse createOrder(UUID user_id) {
-        Cart cart = cartRepository.findByUser_idAndStatus(user_id, CartStatus.ACTIVE)
+        Cart cart = cartRepository.findByUserIdAndStatus(user_id, CartStatus.ACTIVE)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cart not found"));
 
         if(cart.getCart_items().isEmpty()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order cannot be created from empty cart");
         }
 
-        Optional<Order> o = orderRepository.findBuUser_idAndStatus(user_id, OrderStatus.NOT_CONFIRMED);
+        Optional<Order> o = orderRepository.findByUserIdAndStatus(user_id, OrderStatus.NOT_CONFIRMED);
         if(o.isPresent()){
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Order already exists");
         }
@@ -68,7 +68,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public ConfirmOrderResponse confirmOrder(UUID user_id, UUID order_id) {
-        Order order = orderRepository.findByOrder_idAndUser_id(order_id, user_id)
+        Order order = orderRepository.findByOrderIdAndUserId(order_id, user_id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
 
         if (order.getOrderStatus() != OrderStatus.NOT_CONFIRMED) {
@@ -86,7 +86,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public CancelOrderResponse cancelOrder(UUID user_id, UUID order_id) {
-        Order order = orderRepository.findByOrder_idAndUser_id(order_id, user_id)
+        Order order = orderRepository.findByOrderIdAndUserId(order_id, user_id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
         if (order.getOrderStatus() != OrderStatus.NOT_CONFIRMED) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order is " + order.getOrderStatus() + " and cannot be modified");
@@ -105,7 +105,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public AddItemToOrderResponse addItemToOrder(UUID user_id, UUID order_id, UUID product_id, int quantity) {
-        Order order = orderRepository.findByOrder_idAndUser_id(order_id, user_id)
+        Order order = orderRepository.findByOrderIdAndUserId(order_id, user_id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
 
         Product product = productRepository.findById(product_id)
@@ -122,13 +122,14 @@ public class OrderServiceImpl implements OrderService {
         if(orderitem != null){
             orderitem.setQuantity(orderitem.getQuantity() + quantity);
         } else {
-            OrderItem orderitem1 = new OrderItem(
+            OrderItem orderItem1 = new OrderItem(
                     order,
                     product.getProduct_id(),
                     product.getName(),
                     product.getProduct_price(),
                     quantity
             );
+            order.getOrder_items().add(orderItem1);
         }
 
         order.recalculateValue();
@@ -140,7 +141,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public RemoveItemFromOrderResponse removeItemFromOrder(UUID user_id, UUID order_id, UUID product_id, int quantity) {
-        Order order = orderRepository.findByOrder_idAndUser_id(order_id, user_id)
+        Order order = orderRepository.findByOrderIdAndUserId(order_id, user_id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
 
         if (order.getOrderStatus() != OrderStatus.NOT_CONFIRMED) {
@@ -169,7 +170,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public ClearOrderResponse clearOrder(UUID user_id, UUID order_id) {
-        Order order = orderRepository.findByOrder_idAndUser_id(order_id, user_id)
+        Order order = orderRepository.findByOrderIdAndUserId(order_id, user_id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
 
         if (order.getOrderStatus() != OrderStatus.NOT_CONFIRMED) {

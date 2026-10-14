@@ -8,6 +8,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface OrderRepository extends JpaRepository<Order, UUID> {
-    Optional<Order> findByOrder_idAndUser_id(UUID orderId,  UUID userId);
-    Optional<Order> findBuUser_idAndStatus(UUID orderId, OrderStatus orderStatus);
+    Optional<Order> findByOrderIdAndUserId(UUID orderId,  UUID userId);
+    Optional<Order> findByUserIdAndStatus(UUID orderId, OrderStatus orderStatus);
 }
