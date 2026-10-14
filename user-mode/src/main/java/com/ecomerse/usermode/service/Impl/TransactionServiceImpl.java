@@ -9,7 +9,7 @@ import com.ecomerse.usermode.entity.Transaction;
 import com.ecomerse.usermode.repository.OrderRepository;
 import com.ecomerse.usermode.repository.TransactionRepository;
 import com.ecomerse.usermode.service.TransactionService;
-import com.ecomerse.usermode.status.OrderStatus;
+import com.ecomerse.usermode.status.OrderPaymentStatus;
 import com.ecomerse.usermode.status.TransactionMethod;
 import com.ecomerse.usermode.status.TransactionStatus;
 import org.springframework.http.HttpStatus;
@@ -42,7 +42,7 @@ public class TransactionServiceImpl implements TransactionService {
         if(!order.getUser_id().equals(user_id)){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Order dose not belong to the user");
         }
-        if(order.getOrderStatus() != OrderStatus.PENDING_PAYMENT){
+        if(order.getOrderPaymentStatus() != OrderPaymentStatus.PENDING_PAYMENT){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order status is not PENDING_PAYMENT");
         }
 
@@ -73,7 +73,7 @@ public class TransactionServiceImpl implements TransactionService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Order dose not belong to the user");
         }
 
-        if(order.getOrderStatus() != OrderStatus.PENDING_PAYMENT){
+        if(order.getOrderPaymentStatus() != OrderPaymentStatus.PENDING_PAYMENT){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Only PENDING_PAYMENT can be completed");
         }
 
@@ -81,12 +81,12 @@ public class TransactionServiceImpl implements TransactionService {
         if(success){
             transaction.setTransaction_status(TransactionStatus.SUCCESS);
             transaction.setCompleted_at(Instant.now());
-            order.setOrderStatus(OrderStatus.PAID);
+            order.setOrderPaymentStatus(OrderPaymentStatus.PAYMENT_SUCCESS);
             orderRepository.save(order);
         } else {
             transaction.setTransaction_status(TransactionStatus.FAILED);
             transaction.setCompleted_at(Instant.now());
-            order.setOrderStatus(OrderStatus.PAYMENT_FAILED);
+            order.setOrderPaymentStatus(OrderPaymentStatus.PAYMENT_FAILED);
             orderRepository.save(order);
         }
 
@@ -114,7 +114,7 @@ public class TransactionServiceImpl implements TransactionService {
 
         transaction.setTransaction_status(TransactionStatus.CANCELED);
         transaction.setCompleted_at(Instant.now());
-        order.setOrderStatus(OrderStatus.PAYMENT_CANCELED);
+        order.setOrderPaymentStatus(OrderPaymentStatus.PAYMENT_CANCELED);
         orderRepository.save(order);
         transactionRepository.save(transaction);
 

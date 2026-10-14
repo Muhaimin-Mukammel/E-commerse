@@ -1,5 +1,6 @@
 package com.ecomerse.usermode.entity;
 
+import com.ecomerse.usermode.status.OrderPaymentStatus;
 import com.ecomerse.usermode.status.OrderStatus;
 import jakarta.persistence.*;
 
@@ -33,6 +34,10 @@ public class Order {
     @Column(name = "status", nullable = false)
     private OrderStatus orderStatus;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "order_ayment_status", nullable = false)
+    private OrderPaymentStatus orderPaymentStatus;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> order_items = new ArrayList<>();
 
@@ -45,6 +50,7 @@ public class Order {
         this.created_at = Instant.now();
         this.orderStatus = OrderStatus.NOT_CONFIRMED;
         this.cart_id = cart_id;
+        this.orderPaymentStatus = OrderPaymentStatus.ORDER_NOT_CONFIRMED;
     }
 
     public void addItem(OrderItem item) {
@@ -59,7 +65,12 @@ public class Order {
     }
 
 
-
+    public OrderPaymentStatus getOrderPaymentStatus() {
+        return orderPaymentStatus;
+    }
+    public void setOrderPaymentStatus(OrderPaymentStatus orderPaymentStatus) {
+        this.orderPaymentStatus = orderPaymentStatus;
+    }
     public UUID getOrder_id() {
         return order_id;
     }

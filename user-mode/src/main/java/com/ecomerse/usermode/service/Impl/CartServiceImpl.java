@@ -120,7 +120,7 @@ public class CartServiceImpl implements CartService {
                 .orElse(null);
         if(cart != null) {
             return new CreateCartResponse(
-                    "Cart already present",
+                    "Cart already exists",
                     cart.getCart_id(),
                     cart.getStatus(),
                     cart.getCreated_at()
@@ -132,9 +132,9 @@ public class CartServiceImpl implements CartService {
 
         return new CreateCartResponse(
                 "Cart created successfully",
-                cart.getCart_id(),
-                cart.getStatus(),
-                cart.getCreated_at()
+                newCart.getCart_id(),
+                newCart.getStatus(),
+                newCart.getCreated_at()
         );
     }
 

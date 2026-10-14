@@ -7,6 +7,7 @@ import com.ecomerse.usermode.repository.OrderRepository;
 import com.ecomerse.usermode.repository.ProductRepository;
 import com.ecomerse.usermode.service.OrderService;
 import com.ecomerse.usermode.status.CartStatus;
+import com.ecomerse.usermode.status.OrderPaymentStatus;
 import com.ecomerse.usermode.status.OrderStatus;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -67,8 +68,6 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public ConfirmOrderResponse confirmOrder(UUID user_id, UUID order_id) {
-        boolean TEST_TRANSACTION_COMPLETE = true;
-
         Order order = orderRepository.findByOrder_idAndUser_id(order_id, user_id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
 
@@ -78,6 +77,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         order.setOrderStatus(OrderStatus.CONFIRMED);
+        order.setOrderPaymentStatus(OrderPaymentStatus.PENDING_PAYMENT);
         orderRepository.save(order);
 
         return new ConfirmOrderResponse("Order Confirmed Successfully", order.getOrder_id(), order.getOrderStatus());
