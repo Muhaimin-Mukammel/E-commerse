@@ -1,17 +1,9 @@
-
-
-# Containers on the same network can talk using service names instead of changing IPs. The host still uses localhost + published ports; inside Docker you use the service name.
-# Docker repeatedly runs a small test to see is the connection healthy, depends_on with condition : service_healthy waits for the tests to pass.
-
 name: Zestora
 
 x-java-service: &java-service
   restart: "no"
   networks:
     [zestora-net]
-  environment:
-    SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: ${JWT_ISSUER_URI:?}
-    SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: ${JWT_JWK_SET_URI:?}
 
 services:
 
@@ -24,14 +16,10 @@ services:
     expose: [8080]
     environment:
       DB_URL : jdbc:postgresql://postgres:5432/user_mode_db
-      DB_USERNAME : userlocal
+      DB_USERNAME : user
       DB_PASSWORD : ${USER_DB_PASSWORD:?}
-      JWT_ISSUER_URI: ${JWT_ISSUER_URI:?}
-      JWT_JWK_SET_URI: ${JWT_JWK_SET_URI:?}
     depends_on:
       postgres:
-        condition: service_healthy
-      keycloak:
         condition: service_healthy
 
   admin-mode:
@@ -43,14 +31,10 @@ services:
     expose: [8080]
     environment:
       DB_URL: jdbc:postgresql://postgres:5432/admin_mode_db
-      DB_USERNAME: adminlocal
+      DB_USERNAME: admin
       DB_PASSWORD: ${ADMIN_DB_PASSWORD:?}
-      JWT_ISSUER_URI: ${JWT_ISSUER_URI:?}
-      JWT_JWK_SET_URI: ${JWT_JWK_SET_URI:?}
     depends_on:
       postgres:
-        condition: service_healthy
-      keycloak:
         condition: service_healthy
 
   merchant-mode:
@@ -62,14 +46,10 @@ services:
     expose: [8080]
     environment:
       DB_URL: jdbc:postgresql://postgres:5432/merchant_mode_db
-      DB_USERNAME: merchantlocal
+      DB_USERNAME: merchant
       DB_PASSWORD: ${MERCHANT_DB_PASSWORD:?}
-      JWT_ISSUER_URI: ${JWT_ISSUER_URI:?}
-      JWT_JWK_SET_URI: ${JWT_JWK_SET_URI:?}
     depends_on:
       postgres:
-        condition: service_healthy
-      keycloak:
         condition: service_healthy
 
   gateway-eventbus:
@@ -81,55 +61,15 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: ${JWT_ISSUER_URI:?}
-      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: ${JWT_JWK_SET_URI:?}
       REDIS_HOST: redis
       REDIS_PASSWORD: ${REDIS_PASSWORD:?}
     depends_on:
-      keycloak:
-        condition: service_healthy
       redis:
         condition: service_healthy
       user-mode:
         condition: service_started
       merchant-mode:
         condition: service_started
-
-  keycloak:
-    image: quay.io/keycloak/keycloak:26.0
-    container_name: keycloak
-    restart: unless-stopped
-    command: start-dev --import-realm
-    environment:
-      KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_ADMIN_USER:?}
-      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_ADMIN_PASSWORD:?}
-      KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak_db
-      KC_DB_USERNAME: keycloak
-      KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD:?}
-      KC_HOSTNAME: ${KC_PUBLIC_URL}
-      KC_PROXY_HEADERS: xforwarded
-      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
-      KC_HTTP_ENABLED: "true"
-      KC_HEALTH_ENABLED: "true"
-      KC_CLIENT_SECRET: ${KC_CLIENT_SECRET:?}
-      KC_TEST_USER_PASSWORD: ${KC_TEST_USER_PASSWORD:?}
-    volumes:
-      - ./infrastructure/ecommerce-realm.json:/opt/keycloak/data/import/ecommerce-realm.json:ro
-    ports:
-      - "127.0.0.1:8084:8080"
-    depends_on:
-      postgres:
-        condition: service_healthy
-    healthcheck:
-      test: [ "CMD", "timeout", "2", "sh", "-c", "</dev/tcp/127.0.0.1/8080" ]
-      interval: 10s
-      timeout: 5s
-      retries: 12
-      start_period: 30s
-    networks:
-      - zestora-net
-
 
   postgres:
     image: postgres:17
@@ -143,7 +83,7 @@ services:
       USER_DB_PASSWORD: ${USER_DB_PASSWORD:?}
       MERCHANT_DB_PASSWORD: ${MERCHANT_DB_PASSWORD:?}
       ADMIN_DB_PASSWORD: ${ADMIN_DB_PASSWORD:?}
-      KEYCLOAK_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD:?}
+      AUTH_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD:?}
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./infrastructure/postgres/01-init.sh:/docker-entrypoint-initdb.d/01-init.sh:ro
