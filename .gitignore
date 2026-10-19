@@ -41,3 +41,7 @@ secrets/
 *.key
 *.p12
 application-local.*
+
+### .DB_Store
+
+.DB_Store

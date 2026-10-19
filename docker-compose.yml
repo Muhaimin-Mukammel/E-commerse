@@ -16,7 +16,7 @@ services:
     expose: [8080]
     environment:
       DB_URL : jdbc:postgresql://postgres:5432/user_mode_db
-      DB_USERNAME : user
+      DB_USERNAME : usermode
       DB_PASSWORD : ${USER_DB_PASSWORD:?}
     depends_on:
       postgres:
@@ -31,7 +31,7 @@ services:
     expose: [8080]
     environment:
       DB_URL: jdbc:postgresql://postgres:5432/admin_mode_db
-      DB_USERNAME: admin
+      DB_USERNAME: adminmode
       DB_PASSWORD: ${ADMIN_DB_PASSWORD:?}
     depends_on:
       postgres:
@@ -46,7 +46,7 @@ services:
     expose: [8080]
     environment:
       DB_URL: jdbc:postgresql://postgres:5432/merchant_mode_db
-      DB_USERNAME: merchant
+      DB_USERNAME: merchantmode
       DB_PASSWORD: ${MERCHANT_DB_PASSWORD:?}
     depends_on:
       postgres:
@@ -83,7 +83,7 @@ services:
       USER_DB_PASSWORD: ${USER_DB_PASSWORD:?}
       MERCHANT_DB_PASSWORD: ${MERCHANT_DB_PASSWORD:?}
       ADMIN_DB_PASSWORD: ${ADMIN_DB_PASSWORD:?}
-      AUTH_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD:?}
+      AUTH_DB_PASSWORD: ${AUTH_DB_PASSWORD:?}
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./infrastructure/postgres/01-init.sh:/docker-entrypoint-initdb.d/01-init.sh:ro
