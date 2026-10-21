@@ -82,6 +82,12 @@ Explanation :-
 - Order Processing (order, order_item): Captures completed orders and item snapshots (price/name at the time of purchase) to protect history from latest updates/ensure accurate data.
 - Transactions (transaction): Logs payment details, methods, amounts, and statuses (pending/success/failed) linked directly to orders (OneToMany Relationship).
 - Feedback (reviews): Connects users and products to store ratings and written reviews (Not Implemented).
+
+## Codebase Details :
+<div align="center">
+<img width="1616" height="368" alt="image" src="https://github.com/user-attachments/assets/9cbfd4d1-8a04-437b-9211-a72649beedf5" />
+</div>
+
 > More is scheduled and will be added as the project slowly progress
 
 ---

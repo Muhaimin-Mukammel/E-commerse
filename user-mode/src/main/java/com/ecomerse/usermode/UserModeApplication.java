@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /*
-    Debugging the User-Mode for quite some time. Current hour count : 17.5
+    Debugging the User-Mode for quite some time. Current hour count : 35+
  */
 
 @SpringBootApplication

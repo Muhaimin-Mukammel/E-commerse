@@ -63,6 +63,9 @@ services:
     environment:
       REDIS_HOST: redis
       REDIS_PASSWORD: ${REDIS_PASSWORD:?}
+      JWT_SECRET: ${JWT_SECRET:?}
+      JWT_ACCESS_EXPIRATION: 900000
+      JWT_REFRESH_EXPIRATION: 604800000
     depends_on:
       redis:
         condition: service_healthy
