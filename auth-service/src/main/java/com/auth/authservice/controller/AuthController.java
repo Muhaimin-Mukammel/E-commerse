@@ -3,6 +3,7 @@ package com.auth.authservice.controller;
 import com.auth.authservice.dto.AuthResponse;
 import com.auth.authservice.dto.LoginRequest;
 import com.auth.authservice.dto.RegisterRequest;
+import com.auth.authservice.dto.RegisterResponse;
 import com.auth.authservice.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/auth")
+@RequestMapping("api/v1/auth")
 public class AuthController {
     private final AuthService authService;
 
@@ -22,7 +23,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
+    public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(request));
     }
 

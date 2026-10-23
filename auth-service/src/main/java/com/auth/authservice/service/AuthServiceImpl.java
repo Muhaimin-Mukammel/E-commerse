@@ -3,6 +3,7 @@ package com.auth.authservice.service;
 import com.auth.authservice.dto.AuthResponse;
 import com.auth.authservice.dto.LoginRequest;
 import com.auth.authservice.dto.RegisterRequest;
+import com.auth.authservice.dto.RegisterResponse;
 import com.auth.authservice.entities.User;
 import com.auth.authservice.enums.Role;
 import com.auth.authservice.enums.Status;
@@ -42,7 +43,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public AuthResponse register(RegisterRequest request) {
+    public RegisterResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.email())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already registered");
         }
@@ -54,8 +55,7 @@ public class AuthServiceImpl implements AuthService {
         User user = new User(request.email(), request.username(), passwordEncoder.encode(request.password()), request.role(), Status.PENDING);
 
         userRepository.save(user);
-        String token = jwtTokenProvider.generateToken(user);
 
-        return new AuthResponse(token, "Bearer", user.getRole().toString(), user.getEmail());
+        return new RegisterResponse(user.getUsername(), user.getEmail(), user.getRole().name());
     }
 }

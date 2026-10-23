@@ -46,7 +46,7 @@ public class User {
         this.username = username;
         this.password = password;
         this.role = role;
-        this.status = Status.ACTIVE;
+        this.status = status != null ? status : Status.ACTIVE;
         this.createdAt = Instant.now();
         this.updatedAt = Instant.now();
     }
