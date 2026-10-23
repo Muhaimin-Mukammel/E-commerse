@@ -40,7 +40,7 @@ public class JwtTokenProvider {
                 .subject(user.getId().toString())
                 .issuedAt(new Date())
                 .expiration(expiryDate)
-                .signWith(key())
+                .signWith(key(), Jwts.SIG.HS256)
                 .compact();
     }
 
@@ -59,7 +59,6 @@ public class JwtTokenProvider {
             System.out.println(e.getMessage());
             return false;
         }
-
     }
 
     public String extractUserId(String token) {

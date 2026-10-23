@@ -52,7 +52,7 @@ public class AuthServiceImpl implements AuthService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot register as ADMIN");
         }
 
-        User user = new User(request.email(), request.username(), passwordEncoder.encode(request.password()), request.role(), Status.PENDING);
+        User user = new User(request.email(), request.username(), passwordEncoder.encode(request.password()), request.role(), Status.ACTIVE);
 
         userRepository.save(user);
 
