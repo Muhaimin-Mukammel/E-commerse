@@ -93,7 +93,7 @@ Explanation :-
 
 ## Codebase Details :
 <div align="center">
-<img width="1636" height="369" alt="image" src="https://github.com/user-attachments/assets/f35ef1e6-036e-453d-874f-153e2ea1545d" />
+<img width="1617" height="369" alt="image" src="https://github.com/user-attachments/assets/5940e789-1031-4008-adee-de8e422f8e50" />
 </div>
 
 > More is scheduled and will be added as the project slowly progress
