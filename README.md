@@ -15,6 +15,15 @@ E-commerse/
 |   |── .dockerignore
 │   ├── Dockerfile
 │   └── pom.xml
+├── auth-service/
+│   ├── src/
+│   │   ├── main/
+│   │   │   ├── java/
+│   │   │   └── resources/
+│   │   └── test/
+|   |── .dockerignore
+│   ├── Dockerfile
+│   └── pom.xml
 ├── gateway-eventbus/
 │   ├── src/
 │   │   ├── main/
@@ -27,7 +36,6 @@ E-commerse/
 ├── infrastructure/
 │   ├── postgres/
 │   ├── redis/
-│   └── ecommerce-realm.json
 ├── merchant-mode/
 │   ├── src/
 │   │   ├── main/
@@ -53,6 +61,7 @@ E-commerse/
 ├── LICENSE
 ├── .gitattributes
 └── .gitignore
+
 ```
 
 # Architecture :
@@ -62,12 +71,11 @@ E-commerse/
 
 ## 1. Routing, RateLimiting, Authentication :
 ### Routing : 
-As this project is a big Microservice project, for a clean and modular architecture, I used Spring Cloud Framework for the routing and the gateway-eventBus act as the single point of entrence. Spring Cloud Gateway sits in front on port 8080 and has 4 routes : usermode, merchant mode, admin mode, keycloak.
+As Zestora is a big Microservice project, for a clean and modular architecture, I used Spring Cloud Framework for the routing and the gateway-eventBus act as the single point of entrence. Spring Cloud Gateway sits in front on port 8080 and has 4 routes : usermode, merchant mode, admin mode, keycloak.
 ### RateLimiting : 
 Rate Limiting is done in Zestora with Token Bucket Algorithm which is implemented through Bucket4j library. In the system, each client IP gets its own bucket with a capacity of 20 tokens that refill at a rate of 20 tokens every minute ( amount is changeable anytime ). If a request can consume one token it is allowed through, otherwise the gateway returns a 429 Too Many Requests response.
 ### Authentication : 
-Authentication of Zestora is done using OAuth2 with keycloak. This Auth system only allow’s /realms/** endpoints and everything else needs a valid JWT token. The Keycloak also take’s care of login and registration.
-
+Authentication in Zestora is handled by a dedicated auth-service using Spring Security and JWT (jjwt). Users register and log in via the auth endpoints; passwords are stored with BCrypt hashing. On successful login the service issues a short-lived JWT containing the user’s ID, email, username, and role. Protected requests must include this token as Authorization: Bearer …; a filter validates it and sets the security context, and the gateway shares the same JWT secret so it can enforce the token before traffic reaches other services.
 ## 2. Database Schema :
 ### User-Mode Database Schema :
 <div align="center">
@@ -85,7 +93,7 @@ Explanation :-
 
 ## Codebase Details :
 <div align="center">
-<img width="1616" height="368" alt="image" src="https://github.com/user-attachments/assets/9cbfd4d1-8a04-437b-9211-a72649beedf5" />
+<img width="1636" height="369" alt="image" src="https://github.com/user-attachments/assets/f35ef1e6-036e-453d-874f-153e2ea1545d" />
 </div>
 
 > More is scheduled and will be added as the project slowly progress
