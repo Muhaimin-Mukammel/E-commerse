@@ -6,6 +6,8 @@ import com.ecomerse.usermode.dto.transactiondto.GetTransactionResponse;
 import com.ecomerse.usermode.dto.transactiondto.InitiateTransactionResponse;
 import com.ecomerse.usermode.entity.Order;
 import com.ecomerse.usermode.entity.Transaction;
+import com.ecomerse.usermode.entity.UserAccount;
+import com.ecomerse.usermode.repository.AccountRepository;
 import com.ecomerse.usermode.repository.OrderRepository;
 import com.ecomerse.usermode.repository.TransactionRepository;
 import com.ecomerse.usermode.service.TransactionService;
@@ -27,15 +29,18 @@ public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepository transactionRepository;
     private final OrderRepository orderRepository;
+    private final AccountRepository accountRepository;
 
-    public TransactionServiceImpl(TransactionRepository transactionRepository, OrderRepository orderRepository) {
+    public TransactionServiceImpl(TransactionRepository transactionRepository, OrderRepository orderRepository, AccountRepository accountRepository) {
         this.transactionRepository = transactionRepository;
         this.orderRepository = orderRepository;
+        this.accountRepository = accountRepository;
     }
 
     @Override
     @Transactional
-    public InitiateTransactionResponse initiateTransaction(UUID user_id, UUID order_id, TransactionMethod transactionMethod) {
+    public InitiateTransactionResponse initiateTransaction(UUID clientId, UUID order_id, TransactionMethod transactionMethod) {
+        UUID user_id = getUser_id(clientId);
         Order order = orderRepository.findById(order_id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
 
@@ -62,7 +67,8 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional
-    public CompleteTransactionResponse completeTransaction(UUID user_id, Long transaction_id, UUID order_id) {
+    public CompleteTransactionResponse completeTransaction(UUID clientId, Long transaction_id, UUID order_id) {
+        UUID user_id = getUser_id(clientId);
         Transaction transaction = transactionRepository.findByTransactionIdAndOrderId(transaction_id, order_id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Transaction not found"));
 
@@ -97,7 +103,8 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional
-    public CancelTransactionResponse cancelTransaction(UUID user_id, Long transaction_id, UUID order_id) {
+    public CancelTransactionResponse cancelTransaction(UUID clientId, Long transaction_id, UUID order_id) {
+        UUID user_id = getUser_id(clientId);
         Transaction transaction = transactionRepository.findByTransactionIdAndOrderId(transaction_id, order_id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Transaction not found"));
 
@@ -123,7 +130,8 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional(readOnly = true)
-    public GetTransactionResponse getTransaction(UUID user_id, Long transaction_id, UUID order_id) {
+    public GetTransactionResponse getTransaction(UUID clientId, Long transaction_id, UUID order_id) {
+        UUID user_id = getUser_id(clientId);
         Transaction transaction = transactionRepository.findByTransactionIdAndOrderId(transaction_id, order_id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Transaction not found"));
 
@@ -139,7 +147,8 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional
-    public List<GetTransactionResponse> getTransactionsByOrder(UUID user_id, UUID order_id) {
+    public List<GetTransactionResponse> getTransactionsByOrder(UUID clientId, UUID order_id) {
+        UUID user_id = getUser_id(clientId);
         Order order = orderRepository.findById(order_id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
 
@@ -148,5 +157,10 @@ public class TransactionServiceImpl implements TransactionService {
         }
 
         return transactionRepository.findByOrderId(order_id).stream().map(item -> new GetTransactionResponse(item.getTransaction_id(), order_id, item.getTransactio_method(), item.getAmount(), item.getTransaction_status(), item.getCreated_at(), item.getCompleted_at())).toList();
+    }
+
+    private UUID getUser_id(UUID clientId) {
+        UserAccount user = accountRepository.findByClientId(clientId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        return user.getUser_id();
     }
 }

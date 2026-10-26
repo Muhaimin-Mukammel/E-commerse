@@ -8,7 +8,6 @@ import java.util.UUID;
 
 public interface AccountRepository extends JpaRepository<UserAccount, UUID> {
     Optional<UserAccount> findByEmail(String email);
-    Optional<UserAccount> findByKeycloakId(String keycloakId);
-
-    void deleteByKeycloakId(String keycloakId);
+    Optional<UserAccount> findByClientId(UUID clientId);
+    void deleteByClientId(UUID clientId);
 }

@@ -2,6 +2,7 @@ package com.ecomerse.usermode.service.Impl;
 
 import com.ecomerse.usermode.dto.orderdto.*;
 import com.ecomerse.usermode.entity.*;
+import com.ecomerse.usermode.repository.AccountRepository;
 import com.ecomerse.usermode.repository.CartRepository;
 import com.ecomerse.usermode.repository.OrderRepository;
 import com.ecomerse.usermode.repository.ProductRepository;
@@ -23,16 +24,19 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final CartRepository cartRepository;
+    private final AccountRepository accountRepository;
 
-    public OrderServiceImpl(OrderRepository orderRepository, ProductRepository productRepository,  CartRepository cartRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, ProductRepository productRepository,  CartRepository cartRepository,  AccountRepository accountRepository) {
         this.orderRepository = orderRepository;
         this.productRepository = productRepository;
         this.cartRepository = cartRepository;
+        this.accountRepository = accountRepository;
     }
 
     @Override
     @Transactional
-    public CreateOrderResponse createOrder(UUID user_id) {
+    public CreateOrderResponse createOrder(UUID clientId) {
+        UUID user_id = getUser_id(clientId);
         Cart cart = cartRepository.findByUserIdAndStatus(user_id, CartStatus.ACTIVE)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cart not found"));
 
@@ -67,7 +71,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public ConfirmOrderResponse confirmOrder(UUID user_id, UUID order_id) {
+    public ConfirmOrderResponse confirmOrder(UUID clientId, UUID order_id) {
+        UUID user_id = getUser_id(clientId);
         Order order = orderRepository.findByOrderIdAndUserId(order_id, user_id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
 
@@ -85,7 +90,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public CancelOrderResponse cancelOrder(UUID user_id, UUID order_id) {
+    public CancelOrderResponse cancelOrder(UUID clientId, UUID order_id) {
+        UUID user_id = getUser_id(clientId);
         Order order = orderRepository.findByOrderIdAndUserId(order_id, user_id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
         if (order.getOrderStatus() != OrderStatus.NOT_CONFIRMED) {
@@ -104,7 +110,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public AddItemToOrderResponse addItemToOrder(UUID user_id, UUID order_id, UUID product_id, int quantity) {
+    public AddItemToOrderResponse addItemToOrder(UUID clientId, UUID order_id, UUID product_id, int quantity) {
+        UUID user_id = getUser_id(clientId);
         Order order = orderRepository.findByOrderIdAndUserId(order_id, user_id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
 
@@ -140,7 +147,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public RemoveItemFromOrderResponse removeItemFromOrder(UUID user_id, UUID order_id, UUID product_id, int quantity) {
+    public RemoveItemFromOrderResponse removeItemFromOrder(UUID clientId, UUID order_id, UUID product_id, int quantity) {
+        UUID user_id = getUser_id(clientId);
         Order order = orderRepository.findByOrderIdAndUserId(order_id, user_id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
 
@@ -169,7 +177,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public ClearOrderResponse clearOrder(UUID user_id, UUID order_id) {
+    public ClearOrderResponse clearOrder(UUID clientId, UUID order_id) {
+        UUID user_id = getUser_id(clientId);
         Order order = orderRepository.findByOrderIdAndUserId(order_id, user_id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
 
@@ -183,5 +192,10 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.save(order);
 
         return new ClearOrderResponse("Order has been cleared", order.getOrder_id(), order.getValue());
+    }
+
+    private UUID getUser_id(UUID clientId) {
+        UserAccount user = accountRepository.findByClientId(clientId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        return user.getUser_id();
     }
 }

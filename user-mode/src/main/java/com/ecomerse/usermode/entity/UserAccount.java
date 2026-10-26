@@ -14,8 +14,8 @@ public class UserAccount {
     @Column(name = "user_id")
     private UUID user_id;
 
-    @Column(name = "keycloakId", nullable = false, unique = true)
-    private String keycloakId;
+    @Column(name = "clientId", nullable = false, unique = true)
+    private UUID clientId;
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -33,21 +33,15 @@ public class UserAccount {
     @Column(name = "creation_time")
     private Instant createdAt;
 
-    public UserAccount(String keycloakId, String name, String email, String phone_number) {
+    public UserAccount(UUID clientId, String name, String email, String phone_number) {
         this.user_id = UUID.randomUUID();
-        this.keycloakId = keycloakId;
+        this.clientId = clientId;
         this.name = name;
         this.email = email;
         this.phone_number = phone_number;
     }
 
     protected UserAccount () {}
-    public String getKeycloakId() {
-        return keycloakId;
-    }
-    public void setKeycloakId(String keycloakId) {
-        this.keycloakId = keycloakId;
-    }
     public Instant getCreatedAt() {
         return createdAt;
     }
@@ -78,10 +72,16 @@ public class UserAccount {
     public void setName(String name) {
         this.name = name;
     }
-    public UUID getId() {
+    public UUID getUser_id() {
         return user_id;
     }
-    public void setId(UUID Id) {
-        user_id = Id;
+    public void setUser_id(UUID user_id) {
+        this.user_id = user_id;
+    }
+    public UUID getClientId() {
+        return clientId;
+    }
+    public void setClientId(UUID clientId) {
+        this.clientId = clientId;
     }
 }

@@ -5,7 +5,7 @@ import java.util.UUID;
 
 public record ViewAccountResponse(
         UUID id,
-        String keycloakId,
+        UUID clientId,
         String name,
         String email,
         String phone_number,

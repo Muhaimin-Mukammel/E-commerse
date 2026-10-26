@@ -5,6 +5,8 @@ import com.ecomerse.usermode.service.CartService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -19,39 +21,45 @@ public class CartController {
    this.cartService = cartService;
   }
 
-    private static final UUID TEST_USER_ID = UUID.fromString("68425107-0bc7-42ce-a858-d64038a4f63e");
-    private static final UUID TEST_PRODUCT_ID = UUID.fromString("f47ac10b-58cc-4372-a567-0e02b2c3d479");
-
   @PostMapping("/create")
-  public ResponseEntity<CreateCartResponse> createCart() {
-      CreateCartResponse response = cartService.createCart(TEST_USER_ID);
+  public ResponseEntity<CreateCartResponse> createCart(@AuthenticationPrincipal Jwt jwt) {
+      UUID clientId = UUID.fromString(jwt.getSubject());
+      CreateCartResponse response = cartService.createCart(clientId);
       return new ResponseEntity<>(response, HttpStatus.CREATED);
   }
 
   @GetMapping("/getCart")
-  public ResponseEntity<GetCartResponse> getCart(){
-      GetCartResponse response = cartService.getCartByCartId(TEST_USER_ID);
+  public ResponseEntity<GetCartResponse> getCart(@AuthenticationPrincipal Jwt jwt) {
+      UUID clientId = UUID.fromString(jwt.getSubject());
+      GetCartResponse response = cartService.getCartByCartId(clientId);
       return ResponseEntity.ok(response);
   }
 
   @PostMapping("/addItem")
   public ResponseEntity<AddItemToCartResponse> addItemToCart(
-          @Valid @RequestBody AddItemToCartRequest request){
-      AddItemToCartResponse response = cartService.addItemToCart(TEST_USER_ID, TEST_PRODUCT_ID, request.quantity());
+          @Valid @RequestBody AddItemToCartRequest request,
+          @AuthenticationPrincipal Jwt jwt){
+      UUID clientId = UUID.fromString(jwt.getSubject());
+      UUID productId = request.product_id();
+      AddItemToCartResponse response = cartService.addItemToCart(clientId, productId, request.quantity());
       return ResponseEntity.ok(response);
   }
 
     @PatchMapping("/removeItem")
     public ResponseEntity<RemoveItemFromCartResponse> removeItemFromCart(
-            @Valid @RequestBody RemoveItemFromCartRequest request) {
-        RemoveItemFromCartResponse response = cartService.removeItemFromCart(TEST_USER_ID, TEST_PRODUCT_ID, request.quantity());
+            @Valid @RequestBody RemoveItemFromCartRequest request,
+            @AuthenticationPrincipal Jwt jwt) {
+        UUID clientId = UUID.fromString(jwt.getSubject());
+        UUID productId = request.product_id();
+        RemoveItemFromCartResponse response = cartService.removeItemFromCart(clientId, productId, request.quantity());
         return ResponseEntity.ok(response);
     }
 
 
     @DeleteMapping("/clear")
-  public ResponseEntity<ClearCartResponse> clearCart(){
-        ClearCartResponse response = cartService.clearCart(TEST_USER_ID);
+  public ResponseEntity<ClearCartResponse> clearCart(@AuthenticationPrincipal Jwt jwt) {
+        UUID clientId = UUID.fromString(jwt.getSubject());
+        ClearCartResponse response = cartService.clearCart(clientId);
         return ResponseEntity.ok(response);
   }
 }

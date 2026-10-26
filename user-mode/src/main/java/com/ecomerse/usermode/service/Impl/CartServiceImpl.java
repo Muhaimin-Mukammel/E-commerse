@@ -4,6 +4,8 @@ import com.ecomerse.usermode.dto.cartdto.*;
 import com.ecomerse.usermode.entity.Cart;
 import com.ecomerse.usermode.entity.CartItem;
 import com.ecomerse.usermode.entity.Product;
+import com.ecomerse.usermode.entity.UserAccount;
+import com.ecomerse.usermode.repository.AccountRepository;
 import com.ecomerse.usermode.repository.CartRepository;
 import com.ecomerse.usermode.repository.ProductRepository;
 import com.ecomerse.usermode.service.CartService;
@@ -22,18 +24,19 @@ import java.util.UUID;
 public class CartServiceImpl implements CartService {
 
     private final CartRepository cartRepository;
+    private final AccountRepository accountRepository;
     private final ProductRepository productRepository;
 
-    public CartServiceImpl(CartRepository cartRepository,  ProductRepository productRepository) {
+    public CartServiceImpl(CartRepository cartRepository,  ProductRepository productRepository, AccountRepository accountRepository) {
         this.cartRepository = cartRepository;
         this.productRepository = productRepository;
+        this.accountRepository = accountRepository;
     }
 
     @Override
     @Transactional
-    public AddItemToCartResponse addItemToCart(UUID user_id, UUID product_id, Integer quantity) {
-
-        Cart cart = cartRepository.findByUserIdAndStatus(user_id, CartStatus.ACTIVE)
+    public AddItemToCartResponse addItemToCart(UUID clientId, UUID product_id, Integer quantity) {
+        Cart cart = cartRepository.findByUserIdAndStatus(getUser_id(clientId), CartStatus.ACTIVE)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cart not found"));
 
         Product product = productRepository.findById(product_id)
@@ -59,8 +62,8 @@ public class CartServiceImpl implements CartService {
     }
 
     @Transactional
-    public RemoveItemFromCartResponse removeItemFromCart(UUID user_id, UUID product_id, Integer quantity) {
-        Cart cart = cartRepository.findByUserIdAndStatus(user_id, CartStatus.ACTIVE)
+    public RemoveItemFromCartResponse removeItemFromCart(UUID clientId, UUID product_id, Integer quantity) {
+        Cart cart = cartRepository.findByUserIdAndStatus(getUser_id(clientId), CartStatus.ACTIVE)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cart not found"));
 
         CartItem targetitem = cart.getCart_items().stream().filter(item -> item.getProduct().getProduct_id().equals(product_id)).findFirst()
@@ -82,7 +85,8 @@ public class CartServiceImpl implements CartService {
     }
 
     @Transactional(readOnly = true)
-    public GetCartResponse getCartByCartId(UUID user_id) {
+    public GetCartResponse getCartByCartId(UUID clientId) {
+        UUID user_id = getUser_id(clientId);
         Cart cart = cartRepository.findByUserIdAndStatus(user_id, CartStatus.ACTIVE)
                 .orElse(null);
 
@@ -112,7 +116,8 @@ public class CartServiceImpl implements CartService {
     }
 
     @Transactional
-    public CreateCartResponse createCart(UUID user_id) {
+    public CreateCartResponse createCart(UUID clientId) {
+        UUID user_id = getUser_id(clientId);
         Cart cart = cartRepository.findByUserIdAndStatus(user_id, CartStatus.ACTIVE)
                 .orElse(null);
         if(cart != null) {
@@ -136,7 +141,8 @@ public class CartServiceImpl implements CartService {
     }
 
     @Transactional
-    public ClearCartResponse clearCart(UUID user_id) {
+    public ClearCartResponse clearCart(UUID clientId) {
+        UUID user_id = getUser_id(clientId);
         Cart cart =  cartRepository.findByUserIdAndStatus(user_id, CartStatus.ACTIVE)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cart not found"));
         cart.getCart_items().clear();
@@ -153,5 +159,10 @@ public class CartServiceImpl implements CartService {
                 .map(item -> item.getProduct().getProduct_price().multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         cart.setTotal_value(totalPrice);
+    }
+
+    private UUID getUser_id(UUID clientId) {
+        UserAccount user = accountRepository.findByClientId(clientId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        return user.getUser_id();
     }
 }

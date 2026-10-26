@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -24,8 +25,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public CreateOrUpdateAccountResponse createOrUpdate(CreateOrUpdateAccountRequest request, String keycloakId, String email, String name) {
-        Optional<UserAccount> optionalUserAccount = accountRepository.findByKeycloakId(keycloakId);
+    public CreateOrUpdateAccountResponse createOrUpdate(CreateOrUpdateAccountRequest request, UUID clientId, String email, String name) {
+        Optional<UserAccount> optionalUserAccount = accountRepository.findByClientId(clientId);
         UserAccount account;
         if(optionalUserAccount.isPresent()){
             UserAccount account1 = optionalUserAccount.get();
@@ -36,33 +37,33 @@ public class AccountServiceImpl implements AccountService {
 
             account = account1;
         } else {
-            account = new UserAccount(keycloakId, name, email, request.phone_number());
+            account = new UserAccount(clientId, name, email, request.phone_number());
         }
         accountRepository.save(account);
         return new CreateOrUpdateAccountResponse(
-                "Create/Update complete", account.getId(), account.getKeycloakId(), account.getName(), account.getEmail(), account.getPhone_number()
+                "Create/Update complete", account.getUser_id(), account.getClientId(), account.getName(), account.getEmail(), account.getPhone_number()
         );
     }
 
     @Override
     @Transactional(readOnly = true)
-    public ViewAccountResponse getAccountByKeycloakId(String keycloakId) {
-        UserAccount account = accountRepository.findByKeycloakId(keycloakId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found. Keycloak Id : " + keycloakId));
+    public ViewAccountResponse getAccountByClientId(UUID clientId) {
+        UserAccount account = accountRepository.findByClientId(clientId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found. ClinetId : " + clientId));
         return new ViewAccountResponse(
-                account.getId(), account.getKeycloakId(), account.getName(), account.getEmail(),account.getPhone_number(), account.isActive(), account.getCreatedAt()
+                account.getUser_id(), account.getClientId(), account.getName(), account.getEmail(),account.getPhone_number(), account.isActive(), account.getCreatedAt()
         );
     }
 
     @Override
     @Transactional
-    public DeleteAccountResponse deleteAccount(String keycloakId) {
-        Optional<UserAccount> account = accountRepository.findByKeycloakId(keycloakId);
+    public DeleteAccountResponse deleteAccountByClientId(UUID clientId) {
+        Optional<UserAccount> account = accountRepository.findByClientId(clientId);
         if(!account.isPresent()){
-            throw new RuntimeException("Account not found for Keycloak ID: " + keycloakId);
+            throw new RuntimeException("Account not found for Client ID: " + clientId);
         }
 
-        accountRepository.deleteByKeycloakId(keycloakId);
+        accountRepository.deleteByClientId(clientId);
 
         return new DeleteAccountResponse("Deletion Complete.");
     }
