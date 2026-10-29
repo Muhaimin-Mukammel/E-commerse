@@ -79,7 +79,7 @@ Authentication in Zestora is handled by a dedicated auth-service using Spring Se
 ## 2. Database Schema :
 ### User-Mode Database Schema :
 <div align="center">
-<img width="64" height="64" alt="image" src="https://github.com/user-attachments/assets/9b642dfe-fca9-4540-a5a3-925891603bd2" />
+<img width="806" height="800" alt="image" src="https://github.com/user-attachments/assets/0864a18e-3450-4c5e-bbb4-5b431bebf5d2" />
 </div>
 
 Explanation :-
