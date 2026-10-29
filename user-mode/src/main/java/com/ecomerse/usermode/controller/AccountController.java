@@ -30,8 +30,8 @@ public class AccountController {
     public ResponseEntity<CreateOrUpdateAccountResponse> createOrUpdateAccount(@Valid @RequestBody CreateOrUpdateAccountRequest request,
                                                                                @AuthenticationPrincipal Jwt jwt){
         UUID clientId = UUID.fromString(jwt.getSubject());
-        String email = jwt.getClaims().get("email").toString();
-        String name = jwt.getClaims().get("name").toString();
+        String email = jwt.getClaimAsString("email");
+        String name = jwt.getClaimAsString("name");
 
         CreateOrUpdateAccountResponse response = accountService.createOrUpdate(request, clientId, email, name);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -39,15 +39,15 @@ public class AccountController {
 
     @GetMapping("/view")
     public ResponseEntity<ViewAccountResponse> viewAccount(@AuthenticationPrincipal Jwt jwt){
-        UUID cliendId = UUID.fromString(jwt.getSubject());
-        ViewAccountResponse response = accountService.getAccountByClientId(cliendId);
+        UUID clientId = UUID.fromString(jwt.getSubject());
+        ViewAccountResponse response = accountService.getAccountByClientId(clientId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @DeleteMapping("/delete")
     public ResponseEntity<DeleteAccountResponse> deleteAccount(@AuthenticationPrincipal Jwt jwt){
-        UUID cliendId = UUID.fromString(jwt.getSubject());
-        DeleteAccountResponse response = accountService.deleteAccountByClientId(cliendId);
+        UUID clientId = UUID.fromString(jwt.getSubject());
+        DeleteAccountResponse response = accountService.deleteAccountByClientId(clientId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
