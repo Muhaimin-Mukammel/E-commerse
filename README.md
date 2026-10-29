@@ -79,21 +79,32 @@ Authentication in Zestora is handled by a dedicated auth-service using Spring Se
 ## 2. Database Schema :
 ### User-Mode Database Schema :
 <div align="center">
-<img width="647" height="813" alt="image" src="https://github.com/user-attachments/assets/7abb6e39-e183-4248-8135-13b5bf3c36b8" />
+<img width="64" height="64" alt="image" src="https://github.com/user-attachments/assets/9b642dfe-fca9-4540-a5a3-925891603bd2" />
 </div>
 
 Explanation :-
 
-- User Management (user, address): Stores customer profiles and links them to multiple addresses (OneToMany Relationship).
-- Product Catalog (product, category): Manages items, pricing, inventory quantities, and organizes products into categories (Categories not Implemented).
+- User Management (user, Address): Stores customer profiles and links them to multiple addresses (OneToMany Relationship).
+- Product Catalog (product): Manages items, pricing, status, and descriptions (linked via publicStoreId).
 - Shopping Cart (cart, cartItem): Tracks active user carts and the specific product quantities selected before checkout.
-- Order Processing (order, order_item): Captures completed orders and item snapshots (price/name at the time of purchase) to protect history from latest updates/ensure accurate data.
-- Transactions (transaction): Logs payment details, methods, amounts, and statuses (pending/success/failed) linked directly to orders (OneToMany Relationship).
-- Feedback (reviews): Connects users and products to store ratings and written reviews (Not Implemented).
+- Order Processing (order, order_item): Captures completed orders and item snapshots (price/name at the time of purchase) to protect history from later product updates.
+- Transactions (transaction): Logs payment details, methods, amounts, and statuses linked directly to orders.
+
+### Merchant-Mode Database Schema :
+<div aligh="center">
+<img width="908" height="766" alt="image" src="https://github.com/user-attachments/assets/c467bd89-3831-48ed-a373-f47bd9d54b2f" />
+</div>
+
+Explanation :-
+
+- Merchant Management (MerchantAccount): Stores merchant profiles with contact details, status, and timestamps.
+- Store Management (Store, StoreAddress, StoreContact): Defines stores linked to a merchant, with address details and contact information (one-to-one for address/contact).
+- Sales Tracking (StoreSales, StoreSalesItem): Records store sales summaries by time period and the individual product items sold (with name/quantity/amount snapshots).
+- Product Catalog (Product, Inventory): Manages store products (pricing, status, description) and their stock levels (one-to-one inventory link).
 
 ## Codebase Details :
 <div align="center">
-<img width="1617" height="369" alt="image" src="https://github.com/user-attachments/assets/5940e789-1031-4008-adee-de8e422f8e50" />
+<img width="1627" height="368" alt="image" src="https://github.com/user-attachments/assets/c16279af-adb5-4a63-a556-ff55e4fd39dc" />
 </div>
 
 > More is scheduled and will be added as the project slowly progress
