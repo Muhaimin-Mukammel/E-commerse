@@ -86,4 +86,17 @@
         </pluginManagement>
     </build>
 
+    <profiles>
+        <profile>
+            <id>docker</id>
+            <modules>
+                <module>merchant-mode</module>
+                <module>user-mode</module>
+                <module>admin-mode</module>
+                <module>gateway-eventbus</module>
+                <module>auth-service</module>
+            </modules>
+        </profile>
+    </profiles>
+
 </project>

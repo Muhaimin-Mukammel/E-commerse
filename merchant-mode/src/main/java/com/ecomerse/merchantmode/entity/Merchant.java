@@ -15,6 +15,9 @@ public class Merchant {
     @Column(name = "merchantId")
     private UUID merchantId;
 
+    @Column(name = "clientId", nullable = false)
+    private UUID clientId;
+
     @Column(name = "merchantName")
     private String merchantName;
 
@@ -95,4 +98,10 @@ public class Merchant {
         return store;
     }
     public void setStore(Store store) {this.store = store;}
+    public UUID getClientId() {
+        return clientId;
+    }
+    public void setClientId(UUID clientId) {
+        this.clientId = clientId;
+    }
 }
