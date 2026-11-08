@@ -104,7 +104,7 @@ Explanation :-
 
 ## Codebase Details :
 <div align="center">
-<img width="1627" height="368" alt="image" src="https://github.com/user-attachments/assets/c16279af-adb5-4a63-a556-ff55e4fd39dc" />
+<img width="1614" height="372" alt="image" src="https://github.com/user-attachments/assets/1c790826-003c-472d-b412-fe13983b592c" />
 </div>
 
 > More is scheduled and will be added as the project slowly progress

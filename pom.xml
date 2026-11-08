@@ -19,14 +19,6 @@
     <name>Zestora Parent</name>
     <description>Multi-module E-commerce</description>
 
-    <modules>
-        <module>auth-service</module>
-        <module>user-mode</module>
-        <module>merchant-mode</module>
-        <module>admin-mode</module>
-        <module>gateway-eventbus</module>
-    </modules>
-
     <properties>
         <java.version>21</java.version>
         <spring-cloud.version>2025.1.2</spring-cloud.version>
@@ -85,18 +77,5 @@
             </plugins>
         </pluginManagement>
     </build>
-
-    <profiles>
-        <profile>
-            <id>docker</id>
-            <modules>
-                <module>merchant-mode</module>
-                <module>user-mode</module>
-                <module>admin-mode</module>
-                <module>gateway-eventbus</module>
-                <module>auth-service</module>
-            </modules>
-        </profile>
-    </profiles>
 
 </project>

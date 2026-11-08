@@ -1,16 +1,16 @@
 FROM maven:3.9-eclipse-temurin-21 AS build
 WORKDIR /app
+
 COPY pom.xml .
-COPY merchant-mode merchant-mode
-RUN mvn -Pdocker -pl merchant-mode -am -q -B -Dmaven.test.skip=true package
+COPY merchant-mode/ merchant-mode/
+
+WORKDIR /app/merchant-mode
+RUN mvn -q -B -Dmaven.test.skip=true package
 
 FROM eclipse-temurin:21-jre
-WORKDIR /app
-
 RUN useradd --system --uid 10001 app
-USER app
-
+WORKDIR /app
+USER 10001
 COPY --from=build /app/merchant-mode/target/*.jar app.jar
-
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75", "-jar", "app.jar"]
