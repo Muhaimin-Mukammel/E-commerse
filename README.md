@@ -91,8 +91,8 @@ Explanation :-
 - Transactions (transaction): Logs payment details, methods, amounts, and statuses linked directly to orders.
 
 ### Merchant-Mode Database Schema :
-<div aligh="center">
-<img width="908" height="766" alt="image" src="https://github.com/user-attachments/assets/c467bd89-3831-48ed-a373-f47bd9d54b2f" />
+<div align="center">
+<img width="688" height="673" alt="image" src="https://github.com/user-attachments/assets/4ad0d305-e771-4fa2-8152-dfd6e20c0f6d" />
 </div>
 
 Explanation :-
@@ -100,11 +100,12 @@ Explanation :-
 - Merchant Management (MerchantAccount): Stores merchant profiles with contact details, status, and timestamps.
 - Store Management (Store, StoreAddress, StoreContact): Defines stores linked to a merchant, with address details and contact information (one-to-one for address/contact).
 - Sales Tracking (StoreSales, StoreSalesItem): Records store sales summaries by time period and the individual product items sold (with name/quantity/amount snapshots).
-- Product Catalog (Product, Inventory): Manages store products (pricing, status, description) and their stock levels (one-to-one inventory link).
+- Product & Inventory: Products belong to a store; each has a one-to-one Inventory tracking onHand, reserved, and available stock. Changes go through domain methods (restock, reserve, confirm, release).
+- Stock Reservation: Temporary holds on inventory for a client/order. Tracks quantity, status (ACTIVE → CONFIRMED/RELEASED/EXPIRED), and expiry. Confirm reduces both reserved & onHand; release/expire only frees reserved.
 
 ## Codebase Details :
 <div align="center">
-<img width="1614" height="372" alt="image" src="https://github.com/user-attachments/assets/1c790826-003c-472d-b412-fe13983b592c" />
+<img width="1628" height="372" alt="image" src="https://github.com/user-attachments/assets/492ca46b-9b25-4db9-9063-8d1f57cd4072" />
 </div>
 
 > More is scheduled and will be added as the project slowly progress
