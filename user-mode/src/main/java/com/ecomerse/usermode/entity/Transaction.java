@@ -20,31 +20,31 @@ public class Transaction {
     @Column(name = "orderId",  nullable = false)
     private UUID orderId;
 
-    @Column(name = "ammout",  nullable = false)
+    @Column(name = "amount",  nullable = false)
     private BigDecimal amount;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "transaction_method", nullable = false)
-    private TransactionMethod transaction_method;
+    @Column(name = "transactionMethod", nullable = false)
+    private TransactionMethod transactionMethod;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "transaction_status",  nullable = false)
+    @Column(name = "status",  nullable = false)
     private TransactionStatus status;
 
-    @Column(name = "created_at",   nullable = false)
-    private Instant created_at;
+    @Column(name = "createdAt",   nullable = false)
+    private Instant createdAt;
 
-    @Column(name = "completed_at")
-    private Instant completed_at;
+    @Column(name = "completedAt")
+    private Instant completedAt;
 
     public Transaction () {}
 
-    public Transaction(UUID order_id, BigDecimal amount,  TransactionMethod transactio_method) {
+    public Transaction(UUID order_id, BigDecimal amount,  TransactionMethod transactionMethod) {
         this.orderId = order_id;
         this.amount = amount;
-        this.transaction_method = transactio_method;
+        this.transactionMethod = transactionMethod;
         this.status = TransactionStatus.PENDING;
-        this.created_at = Instant.now();
+        this.createdAt = Instant.now();
     }
 
     public Long getTransaction_id() {
@@ -65,28 +65,40 @@ public class Transaction {
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
-    public TransactionMethod getTransactio_method() {
-        return transaction_method;
+    public Long getTransactionId() {
+        return transactionId;
     }
-    public void setTransactio_method(TransactionMethod transactio_method) {
-        this.transaction_method = transactio_method;
+    public void setTransactionId(Long transactionId) {
+        this.transactionId = transactionId;
     }
-    public TransactionStatus getTransaction_status() {
+    public UUID getOrderId() {
+        return orderId;
+    }
+    public void setOrderId(UUID orderId) {
+        this.orderId = orderId;
+    }
+    public TransactionMethod getTransactionMethod() {
+        return transactionMethod;
+    }
+    public void setTransactionMethod(TransactionMethod transactionMethod) {
+        this.transactionMethod = transactionMethod;
+    }
+    public TransactionStatus getStatus() {
         return status;
     }
-    public void setTransaction_status(TransactionStatus transaction_status) {
-        this.status = transaction_status;
+    public void setStatus(TransactionStatus status) {
+        this.status = status;
     }
-    public Instant getCreated_at() {
-        return created_at;
+    public Instant getCreatedAt() {
+        return createdAt;
     }
-    public void setCreated_at(Instant created_at) {
-        this.created_at = created_at;
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
     }
-    public Instant getCompleted_at() {
-        return completed_at;
+    public Instant getCompletedAt() {
+        return completedAt;
     }
-    public void setCompleted_at(Instant completed_at) {
-        this.completed_at = completed_at;
+    public void setCompletedAt(Instant completedAt) {
+        this.completedAt = completedAt;
     }
 }

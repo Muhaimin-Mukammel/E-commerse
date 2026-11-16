@@ -26,7 +26,7 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<ProductResponse> createProduct(
             @AuthenticationPrincipal Jwt jwt,
             @Valid @RequestBody CreateProductRequest request) {
@@ -51,7 +51,7 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/{productId}")
+    @PutMapping("/update/{productId}")
     public ResponseEntity<ProductResponse> updateProduct(
             @AuthenticationPrincipal Jwt jwt,
             @PathVariable UUID productId,
@@ -63,7 +63,7 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/{productId}")
+    @DeleteMapping("/delete/{productId}")
     public ResponseEntity<DeleteProductResponse> deleteProduct(
             @AuthenticationPrincipal Jwt jwt,
             @PathVariable UUID productId) {

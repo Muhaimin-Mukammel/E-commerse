@@ -60,7 +60,7 @@ public class TransactionServiceImpl implements TransactionService {
         Transaction transaction = new Transaction(order.getOrder_id(), order.getValue(), transactionMethod);
         transactionRepository.save(transaction);
 
-        return new InitiateTransactionResponse("Transaction Initiated Successfully", order_id, transaction.getTransaction_id(), transactionMethod, transaction.getAmount(), transaction.getTransaction_status());
+        return new InitiateTransactionResponse("Transaction Initiated Successfully", order_id, transaction.getTransaction_id(), transactionMethod, transaction.getAmount(), transaction.getStatus());
     }
 
     private final Random random = new Random();
@@ -85,20 +85,20 @@ public class TransactionServiceImpl implements TransactionService {
 
         boolean success = random.nextInt(100) < 85;
         if(success){
-            transaction.setTransaction_status(TransactionStatus.SUCCESS);
-            transaction.setCompleted_at(Instant.now());
+            transaction.setStatus(TransactionStatus.SUCCESS);
+            transaction.setCompletedAt(Instant.now());
             order.setOrderPaymentStatus(OrderPaymentStatus.PAYMENT_SUCCESS);
             orderRepository.save(order);
         } else {
-            transaction.setTransaction_status(TransactionStatus.FAILED);
-            transaction.setCompleted_at(Instant.now());
+            transaction.setStatus(TransactionStatus.FAILED);
+            transaction.setCompletedAt(Instant.now());
             order.setOrderPaymentStatus(OrderPaymentStatus.PAYMENT_FAILED);
             orderRepository.save(order);
         }
 
         transactionRepository.save(transaction);
 
-        return new CompleteTransactionResponse("Transaction Completed Successfully", transaction_id, order_id, transaction.getAmount(), transaction.getTransaction_status(), transaction.getCompleted_at());
+        return new CompleteTransactionResponse("Transaction Completed Successfully", transaction_id, order_id, transaction.getAmount(), transaction.getStatus(), transaction.getCompletedAt());
     }
 
     @Override
@@ -115,17 +115,17 @@ public class TransactionServiceImpl implements TransactionService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Order dose not belong to the user");
         }
 
-        if (transaction.getTransaction_status() != TransactionStatus.PENDING) {
+        if (transaction.getStatus() != TransactionStatus.PENDING) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Only PENDING transactions can be cancelled");
         }
 
-        transaction.setTransaction_status(TransactionStatus.CANCELED);
-        transaction.setCompleted_at(Instant.now());
+        transaction.setStatus(TransactionStatus.CANCELED);
+        transaction.setCompletedAt(Instant.now());
         order.setOrderPaymentStatus(OrderPaymentStatus.PAYMENT_CANCELED);
         orderRepository.save(order);
         transactionRepository.save(transaction);
 
-        return new CancelTransactionResponse("Transaction Cancelled", transaction_id, order_id, transaction.getTransaction_status());
+        return new CancelTransactionResponse("Transaction Cancelled", transaction_id, order_id, transaction.getStatus());
     }
 
     @Override
@@ -142,7 +142,7 @@ public class TransactionServiceImpl implements TransactionService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "ACCESS DENIED!! Order dose not belong to the user");
         }
 
-        return new GetTransactionResponse(transaction_id, order_id, transaction.getTransactio_method(), transaction.getAmount(), transaction.getTransaction_status(), transaction.getCreated_at(), transaction.getCompleted_at());
+        return new GetTransactionResponse(transaction_id, order_id, transaction.getTransactionMethod(), transaction.getAmount(), transaction.getStatus(), transaction.getCreatedAt(), transaction.getCompletedAt());
     }
 
     @Override
@@ -156,11 +156,11 @@ public class TransactionServiceImpl implements TransactionService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "ACCESS DENIED!! Order dose not belong to the user");
         }
 
-        return transactionRepository.findByOrderId(order_id).stream().map(item -> new GetTransactionResponse(item.getTransaction_id(), order_id, item.getTransactio_method(), item.getAmount(), item.getTransaction_status(), item.getCreated_at(), item.getCompleted_at())).toList();
+        return transactionRepository.findByOrderId(order_id).stream().map(item -> new GetTransactionResponse(item.getTransaction_id(), order_id, item.getTransactionMethod(), item.getAmount(), item.getStatus(), item.getCreatedAt(), item.getCompletedAt())).toList();
     }
 
     private UUID getUser_id(UUID clientId) {
         UserAccount user = accountRepository.findByClientId(clientId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-        return user.getUser_id();
+        return user.getUserId();
     }
 }

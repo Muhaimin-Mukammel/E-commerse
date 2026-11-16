@@ -24,7 +24,7 @@ public class StoreController {
         this.storeService = storeService;
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<StoreResponse> createStore(
             @AuthenticationPrincipal Jwt jwt,
             @Valid @RequestBody CreateStoreRequest request) {
@@ -47,7 +47,7 @@ public class StoreController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping
+    @PutMapping("/update")
     public ResponseEntity<StoreResponse> updateStore(
             @AuthenticationPrincipal Jwt jwt,
             @Valid @RequestBody CreateStoreRequest request) {
@@ -56,7 +56,7 @@ public class StoreController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/delete")
     public ResponseEntity<DeleteStoreResponse> deleteStore(@AuthenticationPrincipal Jwt jwt) {
         UUID clientId = UUID.fromString(Objects.requireNonNull(jwt.getSubject()));
         DeleteStoreResponse response = storeService.deleteStore(clientId);

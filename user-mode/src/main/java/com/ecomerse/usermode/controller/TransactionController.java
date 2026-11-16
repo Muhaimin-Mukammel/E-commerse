@@ -9,6 +9,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @RestController
@@ -21,12 +22,10 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
-    private static final UUID TEST_USER_ID = UUID.fromString("68425107-0bc7-42ce-a858-d64038a4f63e");
-
     @PostMapping("/initiate")
     public ResponseEntity<InitiateTransactionResponse> initiateTransaction(@Valid @RequestBody InitiateTransactionRequest request,
                                                                            @AuthenticationPrincipal Jwt jwt) {
-        UUID clientId = UUID.fromString(jwt.getSubject());
+        UUID clientId = UUID.fromString(Objects.requireNonNull(jwt.getSubject()));
         InitiateTransactionResponse response = transactionService.initiateTransaction(clientId, request.order_id(), request.method());
         return ResponseEntity.ok(response);
     }
@@ -34,7 +33,7 @@ public class TransactionController {
     @PostMapping("/complete")
     public ResponseEntity<CompleteTransactionResponse> completeTransaction(@Valid @RequestBody CompleteTransactionRequest request,
                                                                            @AuthenticationPrincipal Jwt jwt) {
-        UUID clientId = UUID.fromString(jwt.getSubject());
+        UUID clientId = UUID.fromString(Objects.requireNonNull(jwt.getSubject()));
         CompleteTransactionResponse response = transactionService.completeTransaction(clientId, request.transaction_id(), request.order_id());
         return ResponseEntity.ok(response);
     }
@@ -42,7 +41,7 @@ public class TransactionController {
     @PostMapping("/cancel")
     public ResponseEntity<CancelTransactionResponse> cancelTransaction(@Valid @RequestBody CancelTransactionRequest request,
                                                                        @AuthenticationPrincipal Jwt jwt) {
-        UUID clientId = UUID.fromString(jwt.getSubject());
+        UUID clientId = UUID.fromString(Objects.requireNonNull(jwt.getSubject()));
         CancelTransactionResponse response = transactionService.cancelTransaction(clientId, request.transaction_id(), request.order_id());
         return ResponseEntity.ok(response);
     }
@@ -50,7 +49,7 @@ public class TransactionController {
     @GetMapping("/getTransaction")
     public ResponseEntity<GetTransactionResponse> getTransaction(@Valid @RequestBody GetTransactionRequest request,
                                                                  @AuthenticationPrincipal Jwt jwt) {
-        UUID clientId = UUID.fromString(jwt.getSubject());
+        UUID clientId = UUID.fromString(Objects.requireNonNull(jwt.getSubject()));
         GetTransactionResponse response = transactionService.getTransaction(clientId, request.transaction_id(), request.order_id());
         return ResponseEntity.ok(response);
     }
@@ -58,7 +57,7 @@ public class TransactionController {
     @GetMapping("/order/getTransactions")
     public ResponseEntity<List<GetTransactionResponse>> getTransactionsByOrder(@Valid @RequestBody GetTransactionRequest request,
                                                                                @AuthenticationPrincipal Jwt jwt) {
-        UUID clientId = UUID.fromString(jwt.getSubject());
+        UUID clientId = UUID.fromString(Objects.requireNonNull(jwt.getSubject()));
         List<GetTransactionResponse> response = transactionService.getTransactionsByOrder(clientId, request.order_id());
         return ResponseEntity.ok(response);
     }

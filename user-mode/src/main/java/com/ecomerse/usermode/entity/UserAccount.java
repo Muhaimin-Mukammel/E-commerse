@@ -11,34 +11,34 @@ import java.util.UUID;
 public class UserAccount {
 
     @Id
-    @Column(name = "user_id")
-    private UUID user_id;
+    @Column(name = "userId")
+    private UUID userId;
 
-    @Column(name = "clientId", nullable = false, unique = true)
+    @Column(name = "clientId", nullable = false)
     private UUID clientId;
 
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "phone_number")
-    private String phone_number;
+    @Column(name = "phoneNumber")
+    private String phoneNumber;
 
-    @Column(name = "is_active")
+    @Column(name = "isActive")
     private boolean isActive = true;
 
     @Column(name = "email")
     private String email;
 
     @CreationTimestamp
-    @Column(name = "creation_time")
+    @Column(name = "createdAt")
     private Instant createdAt;
 
-    public UserAccount(UUID clientId, String name, String email, String phone_number) {
-        this.user_id = UUID.randomUUID();
+    public UserAccount(UUID clientId, String name, String email, String phoneNumber) {
+        this.userId = UUID.randomUUID();
         this.clientId = clientId;
         this.name = name;
         this.email = email;
-        this.phone_number = phone_number;
+        this.phoneNumber = phoneNumber;
     }
 
     protected UserAccount () {}
@@ -60,23 +60,23 @@ public class UserAccount {
     public void setActive(boolean active) {
         isActive = active;
     }
-    public String getPhone_number() {
-        return phone_number;
+    public UUID getUserId() {
+        return userId;
     }
-    public void setPhone_number(String phone_number) {
-        this.phone_number = phone_number;
+    public void setUserId(UUID userId) {
+        this.userId = userId;
+    }
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
     public String getName() {
         return name;
     }
     public void setName(String name) {
         this.name = name;
-    }
-    public UUID getUser_id() {
-        return user_id;
-    }
-    public void setUser_id(UUID user_id) {
-        this.user_id = user_id;
     }
     public UUID getClientId() {
         return clientId;

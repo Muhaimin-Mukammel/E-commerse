@@ -24,7 +24,7 @@ public class SalesController {
         this.salesService = salesService;
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<SalesResponse> createSales(
             @AuthenticationPrincipal Jwt jwt,
             @Valid @RequestBody CreateSalesRequest request) {
@@ -47,7 +47,7 @@ public class SalesController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/{salesId}")
+    @PutMapping("/update/{salesId}")
     public ResponseEntity<SalesResponse> updateSales(
             @AuthenticationPrincipal Jwt jwt,
             @PathVariable Long salesId,
@@ -58,7 +58,7 @@ public class SalesController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/{salesId}")
+    @DeleteMapping("/delete/{salesId}")
     public ResponseEntity<DeleteSalesResponse> deleteSales(
             @AuthenticationPrincipal Jwt jwt,
             @PathVariable Long salesId) {

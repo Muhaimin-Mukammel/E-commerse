@@ -24,22 +24,22 @@ public class Order {
     @Column(name = "value", nullable = false)
     private BigDecimal value;
 
-    @Column(name = "created_at",  nullable = false)
-    private Instant created_at;
+    @Column(name = "createdAt",  nullable = false)
+    private Instant createdAt;
 
-    @Column(name = "cart_id")
-    private Long cart_id;
+    @Column(name = "cartId")
+    private Long cartId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private OrderStatus status;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "order_ayment_status", nullable = false)
+    @Column(name = "orderPaymentStatus", nullable = false)
     private OrderPaymentStatus orderPaymentStatus;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> order_items = new ArrayList<>();
+    private List<OrderItem> orderItems = new ArrayList<>();
 
     public Order() {}
 
@@ -47,19 +47,19 @@ public class Order {
         orderId = UUID.randomUUID();
         this.userId = user_id;
         this.value = value;
-        this.created_at = Instant.now();
+        this.createdAt = Instant.now();
         this.status = OrderStatus.NOT_CONFIRMED;
-        this.cart_id = cart_id;
+        this.cartId = cart_id;
         this.orderPaymentStatus = OrderPaymentStatus.ORDER_NOT_CONFIRMED;
     }
 
     public void addItem(OrderItem item) {
-        order_items.add(item);
+        orderItems.add(item);
         item.setOrder(this);
     }
 
     public void recalculateValue() {
-        this.value = order_items.stream()
+        this.value = orderItems.stream()
                 .map(OrderItem::getLineTotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
@@ -89,28 +89,40 @@ public class Order {
     public void setValue(BigDecimal value) {
         this.value = value;
     }
-    public Instant getCreated_at() {
-        return created_at;
+    public UUID getOrderId() {
+        return orderId;
     }
-    public void setCreated_at(Instant created_at) {
-        this.created_at = created_at;
+    public void setOrderId(UUID orderId) {
+        this.orderId = orderId;
     }
-    public Long getCart_id() {
-        return cart_id;
+    public UUID getUserId() {
+        return userId;
     }
-    public void setCart_id(Long cart_id) {
-        this.cart_id = cart_id;
+    public void setUserId(UUID userId) {
+        this.userId = userId;
     }
-    public OrderStatus getOrderStatus() {
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+    public Long getCartId() {
+        return cartId;
+    }
+    public void setCartId(Long cartId) {
+        this.cartId = cartId;
+    }
+    public OrderStatus getStatus() {
         return status;
     }
-    public void setOrderStatus(OrderStatus orderStatus) {
-        this.status = orderStatus;
+    public void setStatus(OrderStatus status) {
+        this.status = status;
     }
-    public List<OrderItem> getOrder_items() {
-        return order_items;
+    public List<OrderItem> getOrderItems() {
+        return orderItems;
     }
-    public void setOrder_items(List<OrderItem> order_items) {
-        this.order_items = order_items;
+    public void setOrderItems(List<OrderItem> orderItems) {
+        this.orderItems = orderItems;
     }
 }

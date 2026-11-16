@@ -46,6 +46,10 @@ public class ProductServiceImpl implements ProductService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Merchant dose not have an active store");
         }
 
+        if(!validateMerchant(merchant, store)){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Merchant dose not own the store");
+        }
+
         Product product = new Product(store, request.productName(), request.productPrice(), request.description());
         product.setLastModifiedBy(merchantName);
         product.setCreatedAt(Instant.now());
@@ -53,7 +57,10 @@ public class ProductServiceImpl implements ProductService {
         product.setRaw_version(0);
         productRepository.save(product);
 
-        Inventory inventory = new Inventory(product, request.initialStock() != null ? request.initialStock() : 0);
+        Inventory inventory = new Inventory(product, request.onHand());
+        if (request.reserve() != null && request.reserve() > 0) {
+            inventory.reserve(request.reserve());   // only this
+        }
         inventory.setLastModifiedBy(merchantName);
         inventoryRepository.save(inventory);
 
@@ -66,7 +73,11 @@ public class ProductServiceImpl implements ProductService {
         Merchant merchant = merchantRepository.findByClientId(clientId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Merchant not found"));
 
-        List<Product> products = productRepository.findByPublicStoreId(merchant.getStore().getPublicStoreId());
+        if(!validateMerchant(merchant, merchant.getStore())){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Merchant dose not own the store");
+        }
+
+        List<Product> products = productRepository.findByStorePublicStoreId(merchant.getStore().getPublicStoreId());
 
         return products.stream().map(this::mapToResponse).toList();
     }
@@ -88,8 +99,8 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
 
-        if(!product.getStore().getPublicStoreId().equals(merchant.getStore().getPublicStoreId())){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Merchant dose not own this product");
+        if(!validateMerchant(merchant, merchant.getStore())){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Merchant dose not own the store");
         }
 
         if (request.productName() != null) product.setProductName(request.productName());
@@ -132,5 +143,13 @@ public class ProductServiceImpl implements ProductService {
                 product.getUpdatedAt(),
                 product.getLastModifiedBy()
         );
+    }
+
+    private boolean validateMerchant(Merchant merchant, Store store) {
+        if(!merchant.getStore().getPublicStoreId().equals(store.getPublicStoreId())){
+            return false;
+        }
+
+        return true;
     }
 }

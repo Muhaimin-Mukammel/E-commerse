@@ -12,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @RestController
@@ -24,12 +25,10 @@ public class AccountController {
         this.accountService = accountService;
     }
 
-    private final String TEST_USER_ID = "68425107-0bc7-42ce-a858-d64038a4f63e";
-
     @PostMapping("/createOrUpdate")
     public ResponseEntity<CreateOrUpdateAccountResponse> createOrUpdateAccount(@Valid @RequestBody CreateOrUpdateAccountRequest request,
                                                                                @AuthenticationPrincipal Jwt jwt){
-        UUID clientId = UUID.fromString(jwt.getSubject());
+        UUID clientId = UUID.fromString(Objects.requireNonNull(jwt.getSubject()));
         String email = jwt.getClaimAsString("email");
         String name = jwt.getClaimAsString("name");
 
@@ -39,14 +38,14 @@ public class AccountController {
 
     @GetMapping("/view")
     public ResponseEntity<ViewAccountResponse> viewAccount(@AuthenticationPrincipal Jwt jwt){
-        UUID clientId = UUID.fromString(jwt.getSubject());
+        UUID clientId = UUID.fromString(Objects.requireNonNull(jwt.getSubject()));
         ViewAccountResponse response = accountService.getAccountByClientId(clientId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @DeleteMapping("/delete")
     public ResponseEntity<DeleteAccountResponse> deleteAccount(@AuthenticationPrincipal Jwt jwt){
-        UUID clientId = UUID.fromString(jwt.getSubject());
+        UUID clientId = UUID.fromString(Objects.requireNonNull(jwt.getSubject()));
         DeleteAccountResponse response = accountService.deleteAccountByClientId(clientId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

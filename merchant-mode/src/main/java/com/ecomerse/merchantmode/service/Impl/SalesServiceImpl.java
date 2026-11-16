@@ -56,7 +56,7 @@ public class SalesServiceImpl implements SalesService {
         if(store == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Merchant dose not have a store");
         }
-        List<Sales> sales = salesRepository.findByPublicStoreId(store.getPublicStoreId());
+        List<Sales> sales = salesRepository.findByStorePublicStoreId(store.getPublicStoreId());
         return sales.stream().map(this::mapToResponse).toList();
     }
 

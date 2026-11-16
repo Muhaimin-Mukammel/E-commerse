@@ -5,7 +5,7 @@ import java.util.UUID;
 public record CreateOrUpdateAccountResponse(
         String message,
         UUID id,
-        UUID cliendId,
+        UUID clientId,
         String name,
         String email,
         String phone_number

@@ -39,7 +39,6 @@ public class Merchant {
     private Instant updatedAt;
 
     @OneToOne(mappedBy = "merchant",  cascade = CascadeType.ALL, orphanRemoval = true)
-    @Column(name = "store")
     private Store store;
 
     public Merchant() {}

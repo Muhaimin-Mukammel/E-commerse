@@ -40,7 +40,7 @@ public class OrderServiceImpl implements OrderService {
         Cart cart = cartRepository.findByUserIdAndStatus(user_id, CartStatus.ACTIVE)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cart not found"));
 
-        if(cart.getCart_items().isEmpty()){
+        if(cart.getCartItems().isEmpty()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order cannot be created from empty cart");
         }
 
@@ -51,13 +51,13 @@ public class OrderServiceImpl implements OrderService {
 
         Order order = new Order(cart.getCart_id(), user_id);
 
-        for(CartItem cartItem : cart.getCart_items()){
+        for(CartItem cartItem : cart.getCartItems()){
             Product p = cartItem.getProduct();
             OrderItem oi = new OrderItem(
                     order,
-                    p.getProduct_id(),
+                    p.getProductId(),
                     p.getName(),
-                    p.getProduct_price(),
+                    p.getProductPrice(),
                     cartItem.getQuantity()
             );
             order.addItem(oi);
@@ -66,7 +66,7 @@ public class OrderServiceImpl implements OrderService {
         order.recalculateValue();
         orderRepository.save(order);
 
-        return new CreateOrderResponse("Order created Successfully", order.getOrder_id(), order.getOrderStatus(), order.getValue(), order.getCreated_at());
+        return new CreateOrderResponse("Order created Successfully", order.getOrder_id(), order.getStatus(), order.getValue(), order.getCreatedAt());
     }
 
     @Override
@@ -76,16 +76,16 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findByOrderIdAndUserId(order_id, user_id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
 
-        if (order.getOrderStatus() != OrderStatus.NOT_CONFIRMED) {
+        if (order.getStatus() != OrderStatus.NOT_CONFIRMED) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Order is " + order.getOrderStatus() + " and cannot be modified");
+                    "Order is " + order.getStatus() + " and cannot be modified");
         }
 
-        order.setOrderStatus(OrderStatus.CONFIRMED);
+        order.setStatus(OrderStatus.CONFIRMED);
         order.setOrderPaymentStatus(OrderPaymentStatus.PENDING_PAYMENT);
         orderRepository.save(order);
 
-        return new ConfirmOrderResponse("Order Confirmed Successfully", order.getOrder_id(), order.getOrderStatus());
+        return new ConfirmOrderResponse("Order Confirmed Successfully", order.getOrder_id(), order.getStatus());
     }
 
     @Override
@@ -94,18 +94,18 @@ public class OrderServiceImpl implements OrderService {
         UUID user_id = getUser_id(clientId);
         Order order = orderRepository.findByOrderIdAndUserId(order_id, user_id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
-        if (order.getOrderStatus() != OrderStatus.NOT_CONFIRMED) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order is " + order.getOrderStatus() + " and cannot be modified");
+        if (order.getStatus() != OrderStatus.NOT_CONFIRMED) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order is " + order.getStatus() + " and cannot be modified");
         }
 
-        if(order.getOrderStatus() == OrderStatus.CANCELED){
+        if(order.getStatus() == OrderStatus.CANCELED){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order is already cancelled");
         }
 
-        order.setOrderStatus(OrderStatus.CANCELED);
+        order.setStatus(OrderStatus.CANCELED);
         orderRepository.save(order);
 
-        return new CancelOrderResponse("Order has been cancelled",  order.getOrder_id(), order.getOrderStatus());
+        return new CancelOrderResponse("Order has been cancelled",  order.getOrder_id(), order.getStatus());
     }
 
     @Override
@@ -118,12 +118,12 @@ public class OrderServiceImpl implements OrderService {
         Product product = productRepository.findById(product_id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
 
-        if (order.getOrderStatus() != OrderStatus.NOT_CONFIRMED) {
+        if (order.getStatus() != OrderStatus.NOT_CONFIRMED) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Order is " + order.getOrderStatus() + " and cannot be modified");
+                    "Order is " + order.getStatus() + " and cannot be modified");
         }
 
-        OrderItem orderitem = order.getOrder_items().stream().filter(i -> i.getProduct_id().equals(product_id)).findFirst()
+        OrderItem orderitem = order.getOrderItems().stream().filter(i -> i.getProductId().equals(product_id)).findFirst()
                 .orElse(null);
 
         if(orderitem != null){
@@ -131,12 +131,12 @@ public class OrderServiceImpl implements OrderService {
         } else {
             OrderItem orderItem1 = new OrderItem(
                     order,
-                    product.getProduct_id(),
+                    product.getProductId(),
                     product.getName(),
-                    product.getProduct_price(),
+                    product.getProductPrice(),
                     quantity
             );
-            order.getOrder_items().add(orderItem1);
+            order.getOrderItems().add(orderItem1);
         }
 
         order.recalculateValue();
@@ -152,19 +152,19 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findByOrderIdAndUserId(order_id, user_id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
 
-        if (order.getOrderStatus() != OrderStatus.NOT_CONFIRMED) {
+        if (order.getStatus() != OrderStatus.NOT_CONFIRMED) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Order is " + order.getOrderStatus() + " and cannot be modified");
+                    "Order is " + order.getStatus() + " and cannot be modified");
         }
 
-        OrderItem orderItem = order.getOrder_items().stream().filter(item -> item.getProduct_id().equals(product_id))
+        OrderItem orderItem = order.getOrderItems().stream().filter(item -> item.getProductId().equals(product_id))
                 .findFirst().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found in the Order"));
 
         int quantityAfterRemove = orderItem.getQuantity() - quantity;
         if(quantityAfterRemove < 0){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Quantity cannot be less than 0");
         } else if (quantityAfterRemove == 0) {
-            order.getOrder_items().remove(orderItem);
+            order.getOrderItems().remove(orderItem);
         } else {
             orderItem.setQuantity(quantityAfterRemove);
         }
@@ -182,12 +182,12 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findByOrderIdAndUserId(order_id, user_id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
 
-        if (order.getOrderStatus() != OrderStatus.NOT_CONFIRMED) {
+        if (order.getStatus() != OrderStatus.NOT_CONFIRMED) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Order is " + order.getOrderStatus() + " and cannot be modified");
+                    "Order is " + order.getStatus() + " and cannot be modified");
         }
 
-        order.getOrder_items().clear();
+        order.getOrderItems().clear();
         order.recalculateValue();
         orderRepository.save(order);
 
@@ -196,6 +196,6 @@ public class OrderServiceImpl implements OrderService {
 
     private UUID getUser_id(UUID clientId) {
         UserAccount user = accountRepository.findByClientId(clientId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-        return user.getUser_id();
+        return user.getUserId();
     }
 }

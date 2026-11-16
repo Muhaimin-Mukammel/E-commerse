@@ -33,7 +33,7 @@ public class AccountServiceImpl implements AccountService {
 
             account1.setName(name);
             account1.setEmail(email);
-            account1.setPhone_number(request.phone_number());
+            account1.setPhoneNumber(request.phone_number());
 
             account = account1;
         } else {
@@ -41,7 +41,7 @@ public class AccountServiceImpl implements AccountService {
         }
         accountRepository.save(account);
         return new CreateOrUpdateAccountResponse(
-                "Create/Update complete", account.getUser_id(), account.getClientId(), account.getName(), account.getEmail(), account.getPhone_number()
+                "Create/Update complete", account.getUserId(), account.getClientId(), account.getName(), account.getEmail(), account.getPhoneNumber()
         );
     }
 
@@ -51,7 +51,7 @@ public class AccountServiceImpl implements AccountService {
         UserAccount account = accountRepository.findByClientId(clientId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found. ClinetId : " + clientId));
         return new ViewAccountResponse(
-                account.getUser_id(), account.getClientId(), account.getName(), account.getEmail(),account.getPhone_number(), account.isActive(), account.getCreatedAt()
+                account.getUserId(), account.getClientId(), account.getName(), account.getEmail(),account.getPhoneNumber(), account.isActive(), account.getCreatedAt()
         );
     }
 

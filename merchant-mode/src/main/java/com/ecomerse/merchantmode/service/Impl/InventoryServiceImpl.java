@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.Instant;
 import java.util.UUID;
 
 @Service
@@ -46,11 +45,11 @@ public class InventoryServiceImpl implements InventoryService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not own this product");
         }
 
-        if(inventoryRepository.findByProductId(productId).isPresent()){
+        if(inventoryRepository.findByProductProductId(productId).isPresent()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Inventory for this product already exists");
         }
 
-        Inventory inventory = new Inventory(product, request.stock());
+        Inventory inventory = new Inventory(product, request.onHand());
         inventory.setLastModifiedBy(merchantName);
         inventoryRepository.save(inventory);
         return mapToResponse(inventory);
@@ -59,7 +58,7 @@ public class InventoryServiceImpl implements InventoryService {
     @Override
     @Transactional(readOnly = true)
     public InventoryResponse getInventoryByProductId(UUID productId) {
-        Inventory inventory = inventoryRepository.findByProductId(productId)
+        Inventory inventory = inventoryRepository.findByProductProductId(productId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Inventory for this product not found"));
         return mapToResponse(inventory);
     }
@@ -84,12 +83,11 @@ public class InventoryServiceImpl implements InventoryService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not own this product");
         }
 
-        Inventory inventory = inventoryRepository.findByProductId(productId)
+        Inventory inventory = inventoryRepository.findByProductProductId(productId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Inventory for this product not found"));
 
-        inventory.setStock(request.stock());
+        inventory.restock(request.onHand());
         inventory.setLastModifiedBy(merchantName);
-        inventory.setUpdatedAt(Instant.now());
         inventoryRepository.save(inventory);
         return mapToResponse(inventory);
     }
@@ -114,7 +112,9 @@ public class InventoryServiceImpl implements InventoryService {
         return new InventoryResponse(
                 inventory.getInventoryId(),
                 inventory.getProduct().getProdcutId(),
-                inventory.getStock(),
+                inventory.getOnHand(),
+                inventory.getAvailable(),
+                inventory.getReserved(),
                 inventory.getCreatedAt(),
                 inventory.getUpdatedAt(),
                 inventory.getLastModifiedBy()

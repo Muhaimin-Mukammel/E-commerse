@@ -7,6 +7,6 @@ import java.util.List;
 import java.util.UUID;
 
 public interface SalesRepository extends JpaRepository<Sales, Long> {
-    List<Sales> findByPublicStoreId(UUID publicStoreId);
+    List<Sales> findByStorePublicStoreId(UUID publicStoreId);
 
 }

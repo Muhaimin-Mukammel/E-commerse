@@ -6,6 +6,7 @@ public record CreateProductRequest(
         String productName,
         BigDecimal productPrice,
         String description,
-        Integer initialStock
+        Integer onHand,
+        Integer reserve
 ) {
 }

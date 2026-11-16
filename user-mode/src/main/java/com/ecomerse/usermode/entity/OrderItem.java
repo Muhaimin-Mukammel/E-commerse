@@ -16,28 +16,28 @@ public class OrderItem {
     private Long orderItemId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id",  nullable = false)
+    @JoinColumn(name = "orderId",  nullable = false)
     private Order order;
 
-    @Column(name = "product_id", nullable = false)
-    private UUID product_id;
+    @Column(name = "productId", nullable = false)
+    private UUID productId;
 
-    @Column(name = "product_name", nullable = false)
-    private  String product_name;
+    @Column(name = "productName", nullable = false)
+    private  String productName;
 
-    @Column(name = "unit_price", nullable = false)
-    private BigDecimal unit_price;
+    @Column(name = "unitPrice", nullable = false)
+    private BigDecimal unitPrice;
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
     public OrderItem() {}
 
-    public OrderItem(Order order, UUID product_id, String product_name, BigDecimal unit_price, Integer quantity) {
+    public OrderItem(Order order, UUID productId, String productName, BigDecimal unitPrice, Integer quantity) {
         this.order = order;
-        this.product_id = product_id;
-        this.product_name = product_name;
-        this.unit_price = unit_price;
+        this.productId = productId;
+        this.productName = productName;
+        this.unitPrice = unitPrice;
         this.quantity = quantity;
     }
 
@@ -54,10 +54,10 @@ public class OrderItem {
     }
 
     public BigDecimal getLineTotal() {
-        if (unit_price == null || quantity == null) {
+        if (unitPrice == null || quantity == null) {
             return BigDecimal.ZERO;
         }
-        return unit_price.multiply(BigDecimal.valueOf(quantity));
+        return unitPrice.multiply(BigDecimal.valueOf(quantity));
     }
 
     public Long getOrder_item_id() {
@@ -72,23 +72,29 @@ public class OrderItem {
     public void setOrder(Order order) {
         this.order = order;
     }
-    public UUID getProduct_id() {
-        return product_id;
+    public Long getOrderItemId() {
+        return orderItemId;
     }
-    public void setProduct_id(UUID product_id) {
-        this.product_id = product_id;
+    public void setOrderItemId(Long orderItemId) {
+        this.orderItemId = orderItemId;
     }
-    public String getProduct_name() {
-        return product_name;
+    public UUID getProductId() {
+        return productId;
     }
-    public void setProduct_name(String product_name) {
-        this.product_name = product_name;
+    public void setProductId(UUID productId) {
+        this.productId = productId;
     }
-    public BigDecimal getUnit_price() {
-        return unit_price;
+    public String getProductName() {
+        return productName;
     }
-    public void setUnit_price(BigDecimal unit_price) {
-        this.unit_price = unit_price;
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+    public BigDecimal getUnitPrice() {
+        return unitPrice;
+    }
+    public void setUnitPrice(BigDecimal unitPrice) {
+        this.unitPrice = unitPrice;
     }
     public Integer getQuantity() {
         return quantity;

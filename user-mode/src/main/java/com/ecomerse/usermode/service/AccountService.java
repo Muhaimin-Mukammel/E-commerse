@@ -10,7 +10,6 @@ import java.util.UUID;
 
 public interface AccountService {
     CreateOrUpdateAccountResponse createOrUpdate(@Valid CreateOrUpdateAccountRequest request, UUID userId, String email, String name);
-    ViewAccountResponse getAccountByClientId(UUID cliendId);
-
+    ViewAccountResponse getAccountByClientId(UUID clientId);
     DeleteAccountResponse deleteAccountByClientId(UUID clientId);
 }

@@ -18,8 +18,11 @@ public class Inventory {
     @JoinColumn(name = "productId")
     private Product product;
 
-    @Column(name = "stock", nullable = false)
-    private Integer stock = 0;
+    @Column(name = "on_hand", nullable = false)
+    private int onHand = 0;
+
+    @Column(name = "reserved", nullable = false)
+    private int reserved = 0;
 
     @CreationTimestamp
     @Column(name = "createdAt", nullable = false, updatable = false)
@@ -38,57 +41,57 @@ public class Inventory {
 
     public Inventory() {}
 
-    public Inventory(Product product, Integer stock) {
+    public Inventory(Product product, Integer onHand) {
         this.inventoryId = UUID.randomUUID();
         this.product = product;
-        this.stock = stock;
+        this.onHand = onHand;
+        this.reserved = 0;
     }
 
-    public UUID getInventoryId() {
-        return inventoryId;
+    public int getAvailable() {
+        return onHand - reserved;
     }
-    public void setInventoryId(UUID inventoryId) {
-        this.inventoryId = inventoryId;
+
+    public void restock(int quantity) {
+        if (quantity <= 0) throw new IllegalArgumentException("Restock quantity must be positive");
+        this.onHand += quantity;
     }
-    public Product getProduct() {
-        return product;
-    }
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-    public Integer getStock() {
-        return stock;
-    }
-    public void setStock(Integer stock) {
-        if (stock == null || stock < 0) {
-            throw new IllegalArgumentException(
-                    "Stock cannot be null or negative"
-            );
+
+    public void reserve(int quantity) {
+        if (quantity <= 0) throw new IllegalArgumentException("Reserve quantity must be positive");
+        if (getAvailable() < quantity) {
+            throw new IllegalStateException("Not enough available stock");
         }
-        this.stock = stock;
+        this.reserved += quantity;
     }
-    public Instant getCreatedAt() {
-        return createdAt;
+
+    public void confirmReservation(int quantity) {
+        if (quantity <= 0) throw new IllegalArgumentException("Quantity must be positive");
+        if (this.reserved < quantity) {
+            throw new IllegalStateException("Not enough reserved stock to confirm");
+        }
+        this.reserved -= quantity;
+        this.onHand -= quantity;
     }
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
+
+    public void releaseReservation(int quantity) {
+        if (quantity <= 0) throw new IllegalArgumentException("Quantity must be positive");
+        if (this.reserved < quantity) {
+            throw new IllegalStateException("Not enough reserved stock to release");
+        }
+        this.reserved -= quantity;
     }
-    public Instant getUpdatedAt() {
-        return updatedAt;
-    }
-    public void setUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-    public String getLastModifiedBy() {
-        return lastModifiedBy;
-    }
+
+    public UUID getInventoryId() { return inventoryId; }
+    public Product getProduct() { return product; }
+    public int getOnHand() { return onHand; }
+    public int getReserved() { return reserved; }
+    public Integer getRaw_Version() { return raw_version; }
+    public Instant getCreatedAt() { return createdAt; }
+    public Instant getUpdatedAt() { return updatedAt; }
+    public String getLastModifiedBy() { return lastModifiedBy; }
+
     public void setLastModifiedBy(String lastModifiedBy) {
         this.lastModifiedBy = lastModifiedBy;
-    }
-    public Integer getRaw_version() {
-        return raw_version;
-    }
-    public void setRaw_version(Integer raw_version) {
-        this.raw_version = raw_version;
     }
 }

@@ -11,35 +11,35 @@ import java.util.UUID;
 public class Product {
     @Id
     @Column(name = "product_id")
-    private UUID product_id;
+    private UUID productId;
 
     @Column(name = "name",  nullable = false)
     private String name;
 
     @Column(name = "product_price", nullable = false)
-    private BigDecimal product_price;
+    private BigDecimal productPrice;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "product_status", nullable = false)
-    private ProductStatus product_status;
+    private ProductStatus productStatus;
 
     @Column(name = "category_id", nullable = false)
-    private UUID category_id;
+    private UUID categoryId;
 
     public Product() {}
-    public Product(UUID product_id, String name, BigDecimal product_price, ProductStatus product_status, UUID category_id) {
-        this.product_id = product_id;
+    public Product(UUID productId, String name, BigDecimal productPrice, ProductStatus productStatus, UUID categoryId) {
+        this.productId = productId;
         this.name = name;
-        this.product_price = product_price;
-        this.product_status = product_status;
-        this.category_id = category_id;
+        this.productPrice = productPrice;
+        this.productStatus = productStatus;
+        this.categoryId = categoryId;
     }
 
-    public UUID getProduct_id() {
-        return product_id;
+    public UUID getProductId() {
+        return productId;
     }
-    public void setProduct_id(UUID product_id) {
-        this.product_id = product_id;
+    public void setProductId(UUID productId) {
+        this.productId = productId;
     }
     public String getName() {
         return name;
@@ -47,22 +47,22 @@ public class Product {
     public void setName(String name) {
         this.name = name;
     }
-    public BigDecimal getProduct_price() {
-        return product_price;
+    public BigDecimal getProductPrice() {
+        return productPrice;
     }
-    public void setProduct_price(BigDecimal product_price) {
-        this.product_price = product_price;
+    public void setProductPrice(BigDecimal productPrice) {
+        this.productPrice = productPrice;
     }
-    public ProductStatus getProduct_status() {
-        return product_status;
+    public ProductStatus getProductStatus() {
+        return productStatus;
     }
-    public void setProduct_status(ProductStatus product_status) {
-        this.product_status = product_status;
+    public void setProductStatus(ProductStatus productStatus) {
+        this.productStatus = productStatus;
     }
-    public UUID getCategory_id() {
-        return category_id;
+    public UUID getCategoryId() {
+        return categoryId;
     }
-    public void setCategory_id(UUID category_id) {
-        this.category_id = category_id;
+    public void setCategoryId(UUID categoryId) {
+        this.categoryId = categoryId;
     }
 }

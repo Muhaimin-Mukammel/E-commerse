@@ -42,23 +42,23 @@ public class CartServiceImpl implements CartService {
         Product product = productRepository.findById(product_id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
 
-        CartItem existingItem = cart.getCart_items().stream()
-                .filter(item -> item.getProduct().getProduct_id().equals(product_id))
+        CartItem existingItem = cart.getCartItems().stream()
+                .filter(item -> item.getProduct().getProductId().equals(product_id))
                 .findFirst().orElse(null);
 
         if(existingItem != null) {
             existingItem.setQuantity(existingItem.getQuantity() + quantity);
         }else {
             CartItem newCartItem = new CartItem(cart, product, quantity);
-            cart.getCart_items().add(newCartItem);
+            cart.getCartItems().add(newCartItem);
         }
 
         CalculateTotalPriceOfCart(cart);
-        cart.setUpdated_at(Instant.now());
+        cart.setUpdatedAt(Instant.now());
 
         cartRepository.save(cart);
 
-        return new AddItemToCartResponse("Item Added to Cart Successfully", cart.getCart_id(), cart.getTotal_value());
+        return new AddItemToCartResponse("Item Added to Cart Successfully", cart.getCart_id(), cart.getTotalValue());
     }
 
     @Transactional
@@ -66,22 +66,22 @@ public class CartServiceImpl implements CartService {
         Cart cart = cartRepository.findByUserIdAndStatus(getUser_id(clientId), CartStatus.ACTIVE)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cart not found"));
 
-        CartItem targetitem = cart.getCart_items().stream().filter(item -> item.getProduct().getProduct_id().equals(product_id)).findFirst()
+        CartItem targetitem = cart.getCartItems().stream().filter(item -> item.getProduct().getProductId().equals(product_id)).findFirst()
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Item not found in the cart"));
 
         if(targetitem.getQuantity() > quantity) {
             targetitem.setQuantity(targetitem.getQuantity() - quantity);
         } else  {
-            cart.getCart_items().remove(targetitem);
+            cart.getCartItems().remove(targetitem);
             targetitem.setCart(null);
         }
 
         CalculateTotalPriceOfCart(cart);
-        cart.setUpdated_at(Instant.now());
+        cart.setUpdatedAt(Instant.now());
 
         cartRepository.save(cart);
 
-        return new RemoveItemFromCartResponse("Item Removed from Cart Successfully", cart.getCart_id(), cart.getTotal_value());
+        return new RemoveItemFromCartResponse("Item Removed from Cart Successfully", cart.getCart_id(), cart.getTotalValue());
     }
 
     @Transactional(readOnly = true)
@@ -94,23 +94,23 @@ public class CartServiceImpl implements CartService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cart not found");
         }
 
-        List<GetCartResponse.CartItemResponse> itemResponse = cart.getCart_items().stream()
+        List<GetCartResponse.CartItemResponse> itemResponse = cart.getCartItems().stream()
                 .map(item -> new GetCartResponse.CartItemResponse(
-                        item.getProduct().getProduct_id(),
+                        item.getProduct().getProductId(),
                         item.getProduct().getName(),
                         item.getQuantity(),
-                        item.getProduct().getProduct_status(),
-                        item.getProduct().getProduct_price(),
+                        item.getProduct().getProductStatus(),
+                        item.getProduct().getProductPrice(),
                         null)).toList();
 
         return new GetCartResponse(
                 "Successful",
                 cart.getCart_id(),
                 cart.getStatus(),
-                cart.getCreated_at(),
-                cart.getUpdated_at(),
+                cart.getCreatedAt(),
+                cart.getUpdatedAt(),
                 itemResponse,
-                cart.getTotal_value(),
+                cart.getTotalValue(),
                 "BDT"
         );
     }
@@ -125,7 +125,7 @@ public class CartServiceImpl implements CartService {
                     "Cart already exists",
                     cart.getCart_id(),
                     cart.getStatus(),
-                    cart.getCreated_at()
+                    cart.getUpdatedAt()
             );
         }
 
@@ -136,7 +136,7 @@ public class CartServiceImpl implements CartService {
                 "Cart created successfully",
                 newCart.getCart_id(),
                 newCart.getStatus(),
-                newCart.getCreated_at()
+                newCart.getCreatedAt()
         );
     }
 
@@ -145,24 +145,24 @@ public class CartServiceImpl implements CartService {
         UUID user_id = getUser_id(clientId);
         Cart cart =  cartRepository.findByUserIdAndStatus(user_id, CartStatus.ACTIVE)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cart not found"));
-        cart.getCart_items().clear();
-        cart.setUpdated_at(Instant.now());
-        cart.setTotal_value(BigDecimal.ZERO);
+        cart.getCartItems().clear();
+        cart.setUpdatedAt(Instant.now());
+        cart.setTotalValue(BigDecimal.ZERO);
 
         cartRepository.save(cart);
 
-        return new ClearCartResponse("Cart cleared successfully", cart.getCart_id(), cart.getTotal_value());
+        return new ClearCartResponse("Cart cleared successfully", cart.getCart_id(), cart.getTotalValue());
     }
 
     private void CalculateTotalPriceOfCart(Cart cart) {
-        BigDecimal totalPrice = cart.getCart_items().stream()
-                .map(item -> item.getProduct().getProduct_price().multiply(BigDecimal.valueOf(item.getQuantity())))
+        BigDecimal totalPrice = cart.getCartItems().stream()
+                .map(item -> item.getProduct().getProductPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-        cart.setTotal_value(totalPrice);
+        cart.setTotalValue(totalPrice);
     }
 
     private UUID getUser_id(UUID clientId) {
         UserAccount user = accountRepository.findByClientId(clientId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-        return user.getUser_id();
+        return user.getUserId();
     }
 }

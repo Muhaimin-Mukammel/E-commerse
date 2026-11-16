@@ -19,11 +19,12 @@ import java.util.UUID;
 public class InventoryController {
     private final InventoryService inventoryService;
 
+
     public InventoryController(InventoryService inventoryService) {
         this.inventoryService = inventoryService;
     }
 
-    @PostMapping("/product/{productId}")
+    @PostMapping("/product/create/{productId}")
     public ResponseEntity<InventoryResponse> createInventory(
             @AuthenticationPrincipal Jwt jwt,
             @PathVariable UUID productId,
@@ -41,13 +42,13 @@ public class InventoryController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{inventoryId}")
+    @GetMapping("/product/{inventoryId}")
     public ResponseEntity<InventoryResponse> getInventoryById(@PathVariable UUID inventoryId) {
         InventoryResponse response = inventoryService.getInventoryById(inventoryId);
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/product/{productId}")
+    @PutMapping("/product/update/{productId}")
     public ResponseEntity<InventoryResponse> updateStock(
             @AuthenticationPrincipal Jwt jwt,
             @PathVariable UUID productId,
@@ -59,7 +60,7 @@ public class InventoryController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/product/{productId}")
+    @DeleteMapping("/product/delete/{productId}")
     public ResponseEntity<DeleteInventoryResponse> deleteInventory(
             @AuthenticationPrincipal Jwt jwt,
             @PathVariable UUID productId) {

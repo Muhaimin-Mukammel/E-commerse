@@ -6,7 +6,9 @@ import java.util.UUID;
 public record InventoryResponse(
         UUID inventoryId,
         UUID productId,
-        Integer stock,
+        Integer onHand,
+        Integer available,
+        Integer reserved,
         Instant createdAt,
         Instant updatedAt,
         String lastModifiedBy
