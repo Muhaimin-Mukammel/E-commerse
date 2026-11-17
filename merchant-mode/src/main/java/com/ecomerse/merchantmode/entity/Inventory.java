@@ -8,7 +8,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table
+@Table(name = "inventory")
 public class Inventory {
     @Id
     @Column(name = "inventoryId")

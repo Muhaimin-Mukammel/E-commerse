@@ -3,7 +3,7 @@ package com.ecomerse.merchantmode.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table
+@Table(name = "storeContact")
 public class StoreContact {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

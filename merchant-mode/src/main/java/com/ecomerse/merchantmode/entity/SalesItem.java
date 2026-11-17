@@ -9,6 +9,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
+@Table(name = "salesItem")
 public class SalesItem {
 
     @Id
